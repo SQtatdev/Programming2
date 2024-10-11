@@ -1,0 +1,116 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" version="24.7.17">
+  <diagram name="Page-1" id="b7rdRbisXsfhqXNTFeZn">
+    <mxGraphModel dx="1692" dy="943" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-1" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;ainulaadne turniiri identifikaator&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Nimi&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;)&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;turniiri nimi&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Alguskuupäev&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;datetime&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;&amp;nbsp;&lt;/b&gt;turniiri alguskuupäev&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial; text-align: center;&quot;&gt;&lt;b&gt;Lõppkuupäev: datetime&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Voor&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;INT&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;turniiri jooksev voor (1/8-finaalid, veerandfinaalid jne)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;kirjeldus&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;)&lt;/b&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;vastete loend&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="230" width="500" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-2" value="&lt;div&gt;Tournament&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="230" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-3" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;meeskonna kordumatu tunnus&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Nimi&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;)&lt;/b&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;meeskonna nimi&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Mängijad&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;)&lt;/b&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;meeskonna mängijate nimekiri&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="580" width="350" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-4" value="Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="580" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-5" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;kordumatu vaste identifikaator&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Turniiri ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Turniiri ID&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Team1&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;int&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;esimene meeskond (link Team class)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Team2&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;int&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;teine ​​meeskond (link Team klassile)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Algusaeg&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;datetime&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;&amp;nbsp;&lt;/b&gt;mängu algusaeg&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ScoreTeam1&lt;/b&gt;: &lt;b&gt;INT&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;meeskonna 1 löödud väravate arv&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ScoreTeam2&lt;/b&gt;: &lt;b&gt;INT&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;võistkonna 2 väravate arv&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Ennustused&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;)&lt;/b&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ennustuste loend (link ennustusklassile)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="950" y="830" width="540" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-6" value="Match" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="950" y="830" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-7" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;kasutaja kordumatu identifikaator&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Kasutajanimi&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;)&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;kasutajanimi&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;IsAdmin&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;20&lt;/span&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;)&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;kas ta on administraator&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Ennustused&lt;/b&gt;:&amp;nbsp;&lt;b&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;varchar(&lt;/span&gt;&lt;span style=&quot;box-sizing: inherit; color: red; font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot; class=&quot;sqlnumbercolor&quot;&gt;255&lt;/span&gt;&lt;span style=&quot;font-family: Consolas, Menlo, &amp;quot;courier new&amp;quot;, monospace; font-size: 15px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;)&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;kasutajate ennustuste loend (link ennustusklassile)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="570" width="480" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-8" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="280" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-9" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;ID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;prognoosi kordumatu identifikaator&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;MatchID&lt;/b&gt;: &lt;b&gt;int &lt;/b&gt;vaste ID (seos Match-klassiga)&lt;/div&gt;&lt;div&gt;&lt;b&gt;UserID&lt;/b&gt;: &lt;b&gt;int &lt;/b&gt;kasutaja ID (seos kasutajaklassiga)&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;PredictedScoreTeam1&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;INT&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;1. meeskonna ennustatud väravate arv&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;PredictedScoreTeam2&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;INT&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;2. meeskonna ennustatud väravate arv&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;Punktid&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;INT&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;prognoosi eest saadud punktide arv&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="840" width="480" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-10" value="Prediction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+          <mxGeometry x="270" y="830" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-20" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-1" target="JmhOv1nxYpQfWcacWQYe-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1120" y="380" as="sourcePoint" />
+            <mxPoint x="1170" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-21" value="1..---0.." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-20">
+          <mxGeometry x="-0.1398" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-22" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.028;entryY=1.007;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-5" target="JmhOv1nxYpQfWcacWQYe-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1500" y="620" as="sourcePoint" />
+            <mxPoint x="1943.9476923076923" y="211" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1320" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-23" value="1--2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-22">
+          <mxGeometry x="-0.013" relative="1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-24" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.944;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-5" target="JmhOv1nxYpQfWcacWQYe-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1340" y="440" as="sourcePoint" />
+            <mxPoint x="1390" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-25" value="1---0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-24">
+          <mxGeometry x="0.0116" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-27" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-7" target="JmhOv1nxYpQfWcacWQYe-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="850" y="490" as="sourcePoint" />
+            <mxPoint x="900" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-28" value="1---0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-27">
+          <mxGeometry x="-0.0446" y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-29" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Turniiri ID&lt;/b&gt;: &lt;b&gt;int&amp;nbsp;&lt;/b&gt;Turniiri ID (seos turniiriklassiga)&lt;/div&gt;&lt;div&gt;&lt;b&gt;UserID&lt;/b&gt;:&amp;nbsp;&lt;b style=&quot;background-color: initial;&quot;&gt;int&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;kasutaja ID (seos kasutajaklassiga)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;b&gt;TotalPoints&lt;/b&gt;: &lt;font face=&quot;Consolas, Menlo, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 15px; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;INT&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;punktid kokku&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="250" width="270" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-30" value="Ranking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="360" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-33" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.109;exitY=1.001;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.004;entryY=0.068;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-1" target="JmhOv1nxYpQfWcacWQYe-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="800" y="620" as="sourcePoint" />
+            <mxPoint x="850" y="570" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-34" value="1--0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-33">
+          <mxGeometry x="-0.0522" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-35" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.432;entryY=1.005;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="JmhOv1nxYpQfWcacWQYe-7" target="JmhOv1nxYpQfWcacWQYe-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="800" y="620" as="sourcePoint" />
+            <mxPoint x="850" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JmhOv1nxYpQfWcacWQYe-37" value="1---0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JmhOv1nxYpQfWcacWQYe-35">
+          <mxGeometry x="0.1375" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
