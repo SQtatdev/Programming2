@@ -15,6 +15,7 @@ namespace KooliProjekt.Data
         public DbSet<ranking> rankings { get; set; }
         public DbSet<Team> teams { get; set; }
         public DbSet<Tournament> tournaments { get; set; }
+        public object TodoLists { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -1,4 +1,5 @@
-﻿@model PagedResult<Tournament>
+﻿@model PagedResult<Match>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +14,11 @@
     <thead>
         <tr>
             <th>Title</th>
-           
+
+            <th>Title</th>
+
+            <th>Title</th>
+
             <th>Title</th>
 
             <th>Title</th>
@@ -21,28 +26,36 @@
             <th>Title</th>
 
             <th>Title</th>
+
+            @(await Component.InvokeAsync<PagerViewComponent>(Model))
+
 
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Results)
-        {
+@foreach (var item in Model.Results) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.TournmentName)
+                @Html.DisplayFor(modelItem => item.Tournament.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentStart)
+                @Html.DisplayFor(modelItem => item.FirstTeam.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentEnd)
+                @Html.DisplayFor(modelItem => item.SecondTeam.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentPart)
+                @Html.DisplayFor(modelItem => item.GameStart)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentInfo)
+                @Html.DisplayFor(modelItem => item.FirstTeamScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecondTeamScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.winner)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

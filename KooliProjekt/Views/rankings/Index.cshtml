@@ -1,4 +1,5 @@
-﻿@model PagedResult<Tournament>
+﻿@model PagedResult<ranking>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -13,12 +14,6 @@
     <thead>
         <tr>
             <th>Title</th>
-           
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
 
             <th>Title</th>
 
@@ -30,19 +25,10 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.TournmentName)
+                @Html.DisplayFor(modelItem => item.UserId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TournamentEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TournamentPart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TournamentInfo)
+                @Html.DisplayFor(modelItem => item.TotalPoint)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

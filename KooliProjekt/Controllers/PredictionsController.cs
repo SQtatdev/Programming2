@@ -9,23 +9,23 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Controllers
 {
-    public class TournamentsController : Controller
+    public class PredictionsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TournamentsController(ApplicationDbContext context)
+        public PredictionsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Tournaments
+        // GET: Predictions
         public async Task<IActionResult> Index(int page = 1)
         {
-            var data = await _context.tournaments.GetPagedAsync(page, 2);
+            var data = await _context.Predictions.GetPagedAsync(page, 2);
             return View(data);
         }
 
-        // GET: Tournaments/Details/5
+        // GET: Predictions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.tournaments
+            var prediction = await _context.Predictions
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (tournament == null)
+            if (prediction == null)
             {
                 return NotFound();
             }
 
-            return View(tournament);
+            return View(prediction);
         }
 
-        // GET: Tournaments/Create
+        // GET: Predictions/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tournaments/Create
+        // POST: Predictions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TournmentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
+        public async Task<IActionResult> Create([Bind("Id,MacthId,UserId,PredictedScroteFirstTeam,PredictedScoreSecondTeam,punktid")] Prediction prediction)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tournament);
+                _context.Add(prediction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(tournament);
+            return View(prediction);
         }
 
-        // GET: Tournaments/Edit/5
+        // GET: Predictions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.tournaments.FindAsync(id);
-            if (tournament == null)
+            var prediction = await _context.Predictions.FindAsync(id);
+            if (prediction == null)
             {
                 return NotFound();
             }
-            return View(tournament);
+            return View(prediction);
         }
 
-        // POST: Tournaments/Edit/5
+        // POST: Predictions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TournmentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MacthId,UserId,PredictedScroteFirstTeam,PredictedScoreSecondTeam,punktid")] Prediction prediction)
         {
-            if (id != tournament.Id)
+            if (id != prediction.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(tournament);
+                    _context.Update(prediction);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TournamentExists(tournament.Id))
+                    if (!PredictionExists(prediction.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace KooliProjekt.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(tournament);
+            return View(prediction);
         }
 
-        // GET: Tournaments/Delete/5
+        // GET: Predictions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +124,34 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.tournaments
+            var prediction = await _context.Predictions
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (tournament == null)
+            if (prediction == null)
             {
                 return NotFound();
             }
 
-            return View(tournament);
+            return View(prediction);
         }
 
-        // POST: Tournaments/Delete/5
+        // POST: Predictions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tournament = await _context.tournaments.FindAsync(id);
-            if (tournament != null)
+            var prediction = await _context.Predictions.FindAsync(id);
+            if (prediction != null)
             {
-                _context.tournaments.Remove(tournament);
+                _context.Predictions.Remove(prediction);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TournamentExists(int id)
+        private bool PredictionExists(int id)
         {
-            return _context.tournaments.Any(e => e.Id == id);
+            return _context.Predictions.Any(e => e.Id == id);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model PagedResult<Tournament>
+﻿@model PagedResult<Prediction>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +14,7 @@
     <thead>
         <tr>
             <th>Title</th>
-           
+            >
             <th>Title</th>
 
             <th>Title</th>
@@ -21,6 +22,9 @@
             <th>Title</th>
 
             <th>Title</th>
+
+            @(await Component.InvokeAsync<PagerViewComponent>(Model))
+
 
             <th></th>
         </tr>
@@ -30,19 +34,19 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.TournmentName)
+                @Html.DisplayFor(modelItem => item.MacthId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentStart)
+                @Html.DisplayFor(modelItem => item.UserId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentEnd)
+                @Html.DisplayFor(modelItem => item.PredictedScroteFirstTeam)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentPart)
+                @Html.DisplayFor(modelItem => item.PredictedScoreSecondTeam)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TournamentInfo)
+                @Html.DisplayFor(modelItem => item.punktid)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
