@@ -1,4 +1,5 @@
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +49,16 @@ namespace KooliProjekt
             app.MapRazorPages();
 
             app.Run();
+
+            builder.Services.AddScoped<IMatchService, MatchService>();
+            builder.Services.AddScoped<IPredictionService, PredictionService>();
+            builder.Services.AddScoped<IRankingService, RankingService>();
+            builder.Services.AddScoped<ITeamService, TeamService>();
+            builder.Services.AddScoped<ITournamentService, TournamentService>();
+
+
+
+
         }
     }
 }
