@@ -4,6 +4,7 @@ using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KooliProjekt.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241206111622_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,19 +381,19 @@ namespace KooliProjekt.Data.Migrations
                     b.HasOne("KooliProjekt.Data.Team", "FirstTeam")
                         .WithMany()
                         .HasForeignKey("FirstTeamId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KooliProjekt.Data.Team", "SecondTeam")
                         .WithMany()
                         .HasForeignKey("SecondTeamId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KooliProjekt.Data.Tournament", "Tournament")
                         .WithMany("Matches")
                         .HasForeignKey("TournamentId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FirstTeam");
@@ -404,8 +407,7 @@ namespace KooliProjekt.Data.Migrations
                 {
                     b.HasOne("KooliProjekt.Data.Match", null)
                         .WithMany("Predictions")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .HasForeignKey("MatchId");
                 });
 
             modelBuilder.Entity("KooliProjekt.Data.ranking", b =>
@@ -413,7 +415,7 @@ namespace KooliProjekt.Data.Migrations
                     b.HasOne("KooliProjekt.Data.Tournament", null)
                         .WithMany("rankings")
                         .HasForeignKey("TournamentID")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

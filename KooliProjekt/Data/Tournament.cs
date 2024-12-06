@@ -9,5 +9,16 @@
         public int TournamentPart {  get; set; }
         public string TournamentInfo { get; set; }
 
+
+        public IList<Match> Matches { get; set; }
+        public IList<ranking> rankings { get; set; }
+
+        public Tournament()
+        {
+            Matches = new List<Match>();
+            rankings = new List<ranking>();
+        }
+        
+
     }
 }
