@@ -1,68 +1,51 @@
-﻿@model PagedResult<Match>
+﻿@model KooliProjekt.Models.MatchesIndexModel
 
+<h2>Список матчей</h2>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<form method="get">
+    <label>Название команды:</label>
+    <input type="text" name="Search.TeamName" value="@Model?.Search.TeamName" />
 
-<h1>Index</h1>
+    <label>Дата от:</label>
+    <input type="date" name="Search.DateFrom" value="@Model?.Search.DateFrom?.ToString("yyyy-MM-dd")" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+    <label>Дата до:</label>
+    <input type="date" name="Search.DateTo" value="@Model?.Search.DateTo?.ToString("yyyy-MM-dd")" />
+
+    <label>Турнир:</label>
+    <select name="Search.TournamentId">
+        <option value="">Все</option>
+        @foreach (var tournament in ViewBag.Tournaments as SelectList)
+        {
+            <option value="@tournament.Value" selected="@(Model?.Search.TournamentId?.ToString() == tournament.Value ? "selected" : null)">
+                @tournament.Text
+            </option>
+        }
+    </select>
+
+    <button type="submit">Искать</button>
+</form>
+
+<table>
     <thead>
         <tr>
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            @(await Component.InvokeAsync<PagerViewComponent>(Model))
-
-
-            <th></th>
+            <th>ID</th>
+            <th>Команда A</th>
+            <th>Команда B</th>
+            <th>Дата</th>
+            <th>Турнир</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Results) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tournament.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstTeam.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SecondTeam.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GameStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstTeamScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SecondTeamScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.winner)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var match in Model.Matches.Results)
+        {
+            <tr>
+                <td>@match.Id</td>
+                <td>@match.FirstTeam.TeamName</td>
+                <td>@match.SecondTeam.TeamName</td>
+                <td>@match.GameStart.ToString("yyyy-MM-dd")</td>
+                <td>@match.Tournament.TournmentName</td>
+            </tr>
+        }
     </tbody>
 </table>

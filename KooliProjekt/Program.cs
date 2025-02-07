@@ -1,17 +1,19 @@
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Добавьте сервисы в контейнер
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -21,9 +23,16 @@ namespace KooliProjekt
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            // Регистрируем все сервисы
+            builder.Services.AddScoped<IMatchService, MatchService>();
+            builder.Services.AddScoped<IPredictionService, PredictionService>();
+            builder.Services.AddScoped<IRankingService, RankingService>();
+            builder.Services.AddScoped<ITeamService, TeamService>();
+            builder.Services.AddScoped<ITournamentService, TournamentService>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Настройка конвейера обработки HTTP-запросов
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -31,7 +40,6 @@ namespace KooliProjekt
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -49,16 +57,6 @@ namespace KooliProjekt
             app.MapRazorPages();
 
             app.Run();
-
-            builder.Services.AddScoped<IMatchService, MatchService>();
-            builder.Services.AddScoped<IPredictionService, PredictionService>();
-            builder.Services.AddScoped<IRankingService, RankingService>();
-            builder.Services.AddScoped<ITeamService, TeamService>();
-            builder.Services.AddScoped<ITournamentService, TournamentService>();
-
-
-
-
         }
     }
 }
