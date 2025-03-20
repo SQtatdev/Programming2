@@ -9,7 +9,7 @@ namespace KooliProjekt
     [ExcludeFromCodeCoverage]
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +55,16 @@ namespace KooliProjekt
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            // Генерация данных при старте приложения
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+                await SeedData.GenerateAsync(context, userManager); // Генерация данных
+            }
 
             app.Run();
         }

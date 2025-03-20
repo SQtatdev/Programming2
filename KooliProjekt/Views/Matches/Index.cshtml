@@ -3,28 +3,43 @@
 <h2>Список матчей</h2>
 
 <form method="get">
-    <label>Название команды:</label>
-    <input type="text" name="Search.TeamName" value="@Model?.Search.TeamName" />
+    <div>
+        <label for="Search_TeamName">Название команды:</label>
+        <input type="text" id="Search_TeamName" name="Search.TeamName" value="@Model?.Search.TeamName" />
+    </div>
 
-    <label>Дата от:</label>
-    <input type="date" name="Search.DateFrom" value="@Model?.Search.DateFrom?.ToString("yyyy-MM-dd")" />
+    <div>
+        <label for="Search_DateFrom">Дата от:</label>
+        <input type="date" id="Search_DateFrom" name="Search.DateFrom" value="@Model?.Search.DateFrom?.ToString(" yyyy-MM-dd")" />
+    </div>
 
-    <label>Дата до:</label>
-    <input type="date" name="Search.DateTo" value="@Model?.Search.DateTo?.ToString("yyyy-MM-dd")" />
+    <div>
+        <label for="Search_DateTo">Дата до:</label>
+        <input type="date" id="Search_DateTo" name="Search.DateTo" value="@Model?.Search.DateTo?.ToString(" yyyy-MM-dd")" />
+    </div>
 
-    <label>Турнир:</label>
-    <select name="Search.TournamentId">
-        <option value="">Все</option>
-        @foreach (var tournament in ViewBag.Tournaments as SelectList)
-        {
-            <option value="@tournament.Value" selected="@(Model?.Search.TournamentId?.ToString() == tournament.Value ? "selected" : null)">
+    <div>
+        <label for="Search_TournamentId">Турнир:</label>
+        <select name="Search.TournamentId" id="Search_TournamentId">
+            <option value="">Все</option>
+            @foreach (var tournament in ViewBag.Tournaments as SelectList)
+            {
+            <option value="@tournament.Value" @(Model?.Search.TournamentId?.ToString() == tournament.Value ? "selected" : "")>
                 @tournament.Text
             </option>
-        }
-    </select>
+            }
+        </select>
+    </div>
 
-    <button type="submit">Искать</button>
+    <div>
+        <button type="submit">Искать</button>
+    </div>
 </form>
+
+@if (Model.Matches.Results.Count == 0)
+{
+<p>Нет матчей, соответствующих вашему запросу.</p>
+}
 
 <table>
     <thead>
@@ -39,13 +54,16 @@
     <tbody>
         @foreach (var match in Model.Matches.Results)
         {
-            <tr>
-                <td>@match.Id</td>
-                <td>@match.FirstTeam.TeamName</td>
-                <td>@match.SecondTeam.TeamName</td>
-                <td>@match.GameStart.ToString("yyyy-MM-dd")</td>
-                <td>@match.Tournament.TournmentName</td>
-            </tr>
+        <tr>
+            <td>@match.Id</td>
+            <td>@match.FirstTeam.TeamName</td>
+            <td>@match.SecondTeam.TeamName</td>
+            <td>@match.GameStart.ToString("yyyy-MM-dd")</td>
+            <td>@match.Tournament.TournmentName</td>
+        </tr>
         }
     </tbody>
 </table>
+
+<!-- Вставка компонента пагинации -->
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Matches))

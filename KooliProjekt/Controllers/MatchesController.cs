@@ -1,61 +1,105 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
-using KooliProjekt.Models;
-using KooliProjekt.Search;
-using System.Linq;
+﻿using KooliProjekt.Models;
+using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class MatchesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMatchService _matchService;
 
-        public MatchesController(ApplicationDbContext context)
+        public MatchesController(IMatchService matchService)
         {
-            _context = context;
+            _matchService = matchService;
         }
 
-        // GET: Matches
-        public async Task<IActionResult> Index(int page, MatchSearch search)
+        // Метод для отображения списка матчей с пагинацией
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
-            var query = _context.Matches
-                .Include(m => m.FirstTeam)
-                .Include(m => m.SecondTeam)
-                .Include(m => m.Tournament)
-                .AsQueryable();
+            // Получаем данные с пагинацией
+            var data = await _matchService.List(page, pageSize);
+            return View(data);  // Передаем данные в представление
+        }
 
-            if (!string.IsNullOrEmpty(search.TeamName))
+        // Метод для отображения деталей матча
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Получаем матч по ID
+            var match = await _matchService.GetById(id.Value);
+            return match == null ? NotFound() : View(match);
+        }
+
+        // Метод для отображения формы создания матча
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // Метод для обработки данных и создания матча
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
+        {
+            if (!ModelState.IsValid) return View(match);
+
+            // Сохраняем матч
+            await _matchService.Save(match);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Метод для отображения формы редактирования матча
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Получаем матч по ID
+            var match = await _matchService.GetById(id.Value);
+            return match == null ? NotFound() : View(match);
+        }
+
+        // Метод для обработки редактирования матча
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
+        {
+            if (id != match.Id) return NotFound();
+            if (!ModelState.IsValid) return View(match);
+
+            try
             {
-                query = query.Where(m => m.FirstTeam.TeamName.Contains(search.TeamName) || m.SecondTeam.TeamName.Contains(search.TeamName));
+                // Редактируем матч
+                await _matchService.Edit(match);
+            }
+            catch
+            {
+                if (!await _matchService.Exists(match.Id)) return NotFound();
+                throw;
             }
 
-            if (search.DateFrom.HasValue)
-            {
-                query = query.Where(m => m.GameStart >= search.DateFrom.Value);
-            }
+            return RedirectToAction(nameof(Index));
+        }
 
-            if (search.DateTo.HasValue)
-            {
-                query = query.Where(m => m.GameStart <= search.DateTo.Value);
-            }
+        // Метод для отображения формы удаления матча
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
 
-            if (search.TournamentId.HasValue)
-            {
-                query = query.Where(m => m.TournamentId == search.TournamentId);
-            }
+            // Получаем матч по ID
+            var match = await _matchService.GetById(id.Value);
+            return match == null ? NotFound() : View(match);
+        }
 
-            var model = new MatchesIndexModel
-            {
-                Search = search,
-                Matches = await query.OrderBy(m => m.GameStart).GetPagedAsync(page, 5)
-            };
-
-            ViewData["Tournaments"] = new SelectList(_context.tournaments, "Id", "Name");
-
-            return View(model);
+        // Метод для удаления матча
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            // Удаляем матч
+            await _matchService.Delete(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

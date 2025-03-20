@@ -1,42 +1,48 @@
 ﻿@model PagedResult<Team>
 
+    @{
+    ViewData["Title"] = "Team List";
+    }
 
-@{
-    ViewData["Title"] = "Index";
-}
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-
-            <th>Title</th>
-            @(await Component.InvokeAsync<PagerViewComponent>(Model))
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Results)
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Players</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Results)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TeamName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TeamPlayers)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TeamName)</td>
+                <td>
+                    @* Assuming TeamPlayers is a list or collection, you can display the names like this *@
+                    @if (item.TeamPlayers != null && item.TeamPlayers.Any())
+                    {
+                    @string.Join(", ", item.TeamPlayers.Select(player => player.Name))
+                    }
+                    else
+                    {
+                    <span>No players assigned</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this team?');">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    @(await Component.InvokeAsync<PagerViewComponent>(Model))

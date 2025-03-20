@@ -1,157 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KooliProjekt.Models;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
-    public class TeamsController : Controller
+    public class RankingsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRankingService _rankingService;
 
-        public TeamsController(ApplicationDbContext context)
+        public RankingsController(IRankingService rankingService)
         {
-            _context = context;
+            _rankingService = rankingService;
         }
 
-        // GET: Teams
-        public async Task<IActionResult> Index(int page = 1)
+        // Метод для отображения списка рейтингов с пагинацией
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
-            var data = await _context.teams.GetPagedAsync(page, 2);
-            return View(data);
+            // Получаем данные с пагинацией
+            var data = await _rankingService.List(page, pageSize);
+            return View(data);  // Передаем данные в представление
         }
 
-        // GET: Teams/Details/5
+        // Метод для отображения деталей рейтинга
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var team = await _context.teams
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return View(team);
+            // Получаем рейтинг по ID
+            var ranking = await _rankingService.GetById(id.Value);
+            return ranking == null ? NotFound() : View(ranking);
         }
 
-        // GET: Teams/Create
+        // Метод для отображения формы создания рейтинга
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Teams/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки данных и создания рейтинга
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TeamName,TeamPlayers")] Team team)
+        public async Task<IActionResult> Create([Bind("Id,TournamentId,UserId,TotalPoint")] Ranking ranking)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(team);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(team);
+            if (!ModelState.IsValid) return View(ranking);
+
+            // Сохраняем рейтинг
+            await _rankingService.Save(ranking);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Teams/Edit/5
+        // Метод для отображения формы редактирования рейтинга
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var team = await _context.teams.FindAsync(id);
-            if (team == null)
-            {
-                return NotFound();
-            }
-            return View(team);
+            // Получаем рейтинг по ID
+            var ranking = await _rankingService.GetById(id.Value);
+            return ranking == null ? NotFound() : View(ranking);
         }
 
-        // POST: Teams/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки редактирования рейтинга
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TeamName,TeamPlayers")] Team team)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TournamentId,UserId,TotalPoint")] Ranking ranking)
         {
-            if (id != team.Id)
+            if (id != ranking.Id) return NotFound();
+            if (!ModelState.IsValid) return View(ranking);
+
+            try
             {
-                return NotFound();
+                // Редактируем рейтинг
+                await _rankingService.Edit(ranking);
+            }
+            catch
+            {
+                if (!await _rankingService.Exists(ranking.Id)) return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(team);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeamExists(team.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(team);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Teams/Delete/5
+        // Метод для отображения формы удаления рейтинга
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var team = await _context.teams
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (team == null)
-            {
-                return NotFound();
-            }
-
-            return View(team);
+            // Получаем рейтинг по ID
+            var ranking = await _rankingService.GetById(id.Value);
+            return ranking == null ? NotFound() : View(ranking);
         }
 
-        // POST: Teams/Delete/5
+        // Метод для удаления рейтинга
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var team = await _context.teams.FindAsync(id);
-            if (team != null)
-            {
-                _context.teams.Remove(team);
-            }
-
-            await _context.SaveChangesAsync();
+            // Удаляем рейтинг
+            await _rankingService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TeamExists(int id)
-        {
-            return _context.teams.Any(e => e.Id == id);
         }
     }
 }

@@ -1,157 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KooliProjekt.Models;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class TournamentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITournamentService _tournamentService;
 
-        public TournamentsController(ApplicationDbContext context)
+        public TournamentsController(ITournamentService tournamentService)
         {
-            _context = context;
+            _tournamentService = tournamentService;
         }
 
-        // GET: Tournaments
-        public async Task<IActionResult> Index(int page = 1)
+        // Метод для отображения списка турниров с пагинацией
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
-            var data = await _context.tournaments.GetPagedAsync(page, 2);
-            return View(data);
+            // Получаем данные с пагинацией
+            var data = await _tournamentService.List(page, pageSize);
+            return View(data);  // Передаем данные в представление
         }
 
-        // GET: Tournaments/Details/5
+        // Метод для отображения деталей турнира
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var tournament = await _context.tournaments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-
-            return View(tournament);
+            // Получаем турнир по ID
+            var tournament = await _tournamentService.GetById(id.Value);
+            return tournament == null ? NotFound() : View(tournament);
         }
 
-        // GET: Tournaments/Create
+        // Метод для отображения формы создания турнира
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tournaments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки данных и создания турнира
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TournmentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
+        public async Task<IActionResult> Create([Bind("Id,TournamentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tournament);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tournament);
+            if (!ModelState.IsValid) return View(tournament);
+
+            // Сохраняем турнир
+            await _tournamentService.Save(tournament);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Tournaments/Edit/5
+        // Метод для отображения формы редактирования турнира
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var tournament = await _context.tournaments.FindAsync(id);
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-            return View(tournament);
+            // Получаем турнир по ID
+            var tournament = await _tournamentService.GetById(id.Value);
+            return tournament == null ? NotFound() : View(tournament);
         }
 
-        // POST: Tournaments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки редактирования турнира
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TournmentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TournamentName,TournamentStart,TournamentEnd,TournamentPart,TournamentInfo")] Tournament tournament)
         {
-            if (id != tournament.Id)
+            if (id != tournament.Id) return NotFound();
+            if (!ModelState.IsValid) return View(tournament);
+
+            try
             {
-                return NotFound();
+                // Редактируем турнир
+                await _tournamentService.Edit(tournament);
+            }
+            catch
+            {
+                if (!await _tournamentService.Exists(tournament.Id)) return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tournament);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TournamentExists(tournament.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tournament);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Tournaments/Delete/5
+        // Метод для отображения формы удаления турнира
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var tournament = await _context.tournaments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-
-            return View(tournament);
+            // Получаем турнир по ID
+            var tournament = await _tournamentService.GetById(id.Value);
+            return tournament == null ? NotFound() : View(tournament);
         }
 
-        // POST: Tournaments/Delete/5
+        // Метод для удаления турнира
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tournament = await _context.tournaments.FindAsync(id);
-            if (tournament != null)
-            {
-                _context.tournaments.Remove(tournament);
-            }
-
-            await _context.SaveChangesAsync();
+            // Удаляем турнир
+            await _tournamentService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TournamentExists(int id)
-        {
-            return _context.tournaments.Any(e => e.Id == id);
         }
     }
 }

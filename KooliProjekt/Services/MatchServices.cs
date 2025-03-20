@@ -1,8 +1,9 @@
 ﻿using KooliProjekt.Data;
-using KooliProjekt.Search;
+using KooliProjekt.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
@@ -15,76 +16,72 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
-        // Метод для получения списка матчей с фильтрами
-        public async Task<PagedResult<Match>> List(int page, int pageSize, MatchSearch search)
+        // Метод для получения списка матчей с пагинацией
+        public async Task<PagedResult<Match>> List(int page, int pageSize)
         {
             var query = _context.Matches
-                .Include(m => m.FirstTeam)
-                .Include(m => m.SecondTeam)
-                .Include(m => m.Tournament)
-                .AsQueryable();
+                .OrderBy(m => m.MatchDate)
+                .AsNoTracking(); // Не отслеживаем изменения для улучшения производительности
 
-            // Применяем фильтры
-            if (!string.IsNullOrEmpty(search.TeamName))
+            var totalCount = await query.CountAsync();
+
+            var matches = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Match>
             {
-                query = query.Where(m => m.FirstTeam.TeamName.Contains(search.TeamName) || m.SecondTeam.TeamName.Contains(search.TeamName));
-            }
-
-            if (search.DateFrom.HasValue)
-            {
-                query = query.Where(m => m.GameStart >= search.DateFrom.Value);
-            }
-
-            if (search.DateTo.HasValue)
-            {
-                query = query.Where(m => m.GameStart <= search.DateTo.Value);
-            }
-
-            if (search.TournamentId.HasValue)
-            {
-                query = query.Where(m => m.TournamentId == search.TournamentId);
-            }
-
-            return await query.OrderBy(m => m.GameStart).GetPagedAsync(page, pageSize);
+                Items = matches,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
         }
 
-        // Метод для получения матча по Id
-        public async Task<Match> Get(int id)
+        // Метод для получения матча по ID
+        public async Task<Match> GetById(int id)
         {
-            var match = await _context.Matches
-                .Include(m => m.FirstTeam)
-                .Include(m => m.SecondTeam)
-                .Include(m => m.Tournament)
+            return await _context.Matches
+                .AsNoTracking() // Не отслеживаем изменения
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            return match; // Если матч не найден, вернется null
         }
 
-        // Метод для сохранения матча
+        // Метод для сохранения нового матча
         public async Task Save(Match match)
         {
-            if (match.Id == 0) // Новый матч
-            {
-                _context.Matches.Add(match);
-            }
-            else // Обновление существующего матча
-            {
-                _context.Matches.Update(match);
-            }
+            if (match == null)
+                throw new ArgumentNullException(nameof(match));
 
-            await _context.SaveChangesAsync(); // Сохраняем изменения
+            _context.Matches.Add(match);
+            await _context.SaveChangesAsync();
+        }
+
+        // Метод для редактирования существующего матча
+        public async Task Edit(Match match)
+        {
+            if (match == null)
+                throw new ArgumentNullException(nameof(match));
+
+            _context.Matches.Update(match);
+            await _context.SaveChangesAsync();
         }
 
         // Метод для удаления матча
         public async Task Delete(int id)
         {
-            var match = await _context.Matches.FindAsync(id); // Ищем матч по id
+            var match = await _context.Matches.FindAsync(id);
+            if (match == null)
+                throw new KeyNotFoundException($"Match with ID {id} not found.");
 
-            if (match != null)
-            {
-                _context.Matches.Remove(match); // Удаляем матч
-                await _context.SaveChangesAsync(); // Сохраняем изменения
-            }
+            _context.Matches.Remove(match);
+            await _context.SaveChangesAsync();
+        }
+
+        // Метод для проверки существования матча
+        public async Task<bool> Exists(int id)
+        {
+            return await _context.Matches.AnyAsync(m => m.Id == id);
         }
     }
 }

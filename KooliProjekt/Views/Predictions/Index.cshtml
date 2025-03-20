@@ -1,59 +1,44 @@
 ﻿@model PagedResult<Prediction>
 
-
-@{
+    @{
     ViewData["Title"] = "Index";
-}
+    }
 
-<h1>Index</h1>
+    <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            >
-            <th>Title</th>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
 
-            <th>Title</th>
-
-            <th>Title</th>
-
-            <th>Title</th>
-
-            @(await Component.InvokeAsync<PagerViewComponent>(Model))
-
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Results)
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Match ID</th>
+                <th>User ID</th>
+                <th>Predicted Score (First Team)</th>
+                <th>Predicted Score (Second Team)</th>
+                <th>Points</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Results)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MacthId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PredictedScroteFirstTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PredictedScoreSecondTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.punktid)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.MatchId)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserId)</td>
+                <td>@Html.DisplayFor(modelItem => item.PredictedScoreFirstTeam)</td>
+                <td>@Html.DisplayFor(modelItem => item.PredictedScoreSecondTeam)</td>
+                <td>@Html.DisplayFor(modelItem => item.Points)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this prediction?');">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    @(await Component.InvokeAsync<PagerViewComponent>(Model))

@@ -1,157 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KooliProjekt.Models;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class PredictionsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPredictionService _predictionService;
 
-        public PredictionsController(ApplicationDbContext context)
+        public PredictionsController(IPredictionService predictionService)
         {
-            _context = context;
+            _predictionService = predictionService;
         }
 
-        // GET: Predictions
-        public async Task<IActionResult> Index(int page = 1)
+        // Метод для отображения списка предсказаний с пагинацией
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
-            var data = await _context.Predictions.GetPagedAsync(page, 2);
-            return View(data);
+            // Получаем данные с пагинацией
+            var data = await _predictionService.List(page, pageSize);
+            return View(data);  // Передаем данные в представление
         }
 
-        // GET: Predictions/Details/5
+        // Метод для отображения деталей предсказания
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var prediction = await _context.Predictions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (prediction == null)
-            {
-                return NotFound();
-            }
-
-            return View(prediction);
+            // Получаем предсказание по ID
+            var prediction = await _predictionService.GetById(id.Value);
+            return prediction == null ? NotFound() : View(prediction);
         }
 
-        // GET: Predictions/Create
+        // Метод для отображения формы создания предсказания
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Predictions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки данных и создания предсказания
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MacthId,UserId,PredictedScroteFirstTeam,PredictedScoreSecondTeam,punktid")] Prediction prediction)
+        public async Task<IActionResult> Create([Bind("Id,MatchId,UserId,PredictedScoreFirstTeam,PredictedScoreSecondTeam,Punktid")] Prediction prediction)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(prediction);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(prediction);
+            if (!ModelState.IsValid) return View(prediction);
+
+            // Сохраняем предсказание
+            await _predictionService.Save(prediction);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Predictions/Edit/5
+        // Метод для отображения формы редактирования предсказания
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var prediction = await _context.Predictions.FindAsync(id);
-            if (prediction == null)
-            {
-                return NotFound();
-            }
-            return View(prediction);
+            // Получаем предсказание по ID
+            var prediction = await _predictionService.GetById(id.Value);
+            return prediction == null ? NotFound() : View(prediction);
         }
 
-        // POST: Predictions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Метод для обработки редактирования предсказания
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MacthId,UserId,PredictedScroteFirstTeam,PredictedScoreSecondTeam,punktid")] Prediction prediction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MatchId,UserId,PredictedScoreFirstTeam,PredictedScoreSecondTeam,Punktid")] Prediction prediction)
         {
-            if (id != prediction.Id)
+            if (id != prediction.Id) return NotFound();
+            if (!ModelState.IsValid) return View(prediction);
+
+            try
             {
-                return NotFound();
+                // Редактируем предсказание
+                await _predictionService.Edit(prediction);
+            }
+            catch
+            {
+                if (!await _predictionService.Exists(prediction.Id)) return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(prediction);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PredictionExists(prediction.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(prediction);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Predictions/Delete/5
+        // Метод для отображения формы удаления предсказания
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var prediction = await _context.Predictions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (prediction == null)
-            {
-                return NotFound();
-            }
-
-            return View(prediction);
+            // Получаем предсказание по ID
+            var prediction = await _predictionService.GetById(id.Value);
+            return prediction == null ? NotFound() : View(prediction);
         }
 
-        // POST: Predictions/Delete/5
+        // Метод для удаления предсказания
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prediction = await _context.Predictions.FindAsync(id);
-            if (prediction != null)
-            {
-                _context.Predictions.Remove(prediction);
-            }
-
-            await _context.SaveChangesAsync();
+            // Удаляем предсказание
+            await _predictionService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PredictionExists(int id)
-        {
-            return _context.Predictions.Any(e => e.Id == id);
         }
     }
 }
