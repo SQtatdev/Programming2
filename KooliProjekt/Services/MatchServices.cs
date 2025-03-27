@@ -2,6 +2,7 @@
 using KooliProjekt.Models;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace KooliProjekt.Services
 {
     public class MatchService : IMatchService
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context; // Убрал лишний namespace Data
 
         public MatchService(Data.ApplicationDbContext context)
         {
@@ -33,14 +34,17 @@ namespace KooliProjekt.Services
                     m.SecondTeam.TeamName.Contains(search.TeamName));
             }
 
-            if (search.DateFrom.HasValue)
+            // Исправлено: используем search.StartDate и search.EndDate
+            if (search.StartDate.HasValue)
             {
-                query = query.Where(m => m.GameStart >= search.DateFrom);
+                DateOnly startDateOnly = DateOnly.FromDateTime(search.StartDate.Value);
+                query = query.Where(m => m.Date >= startDateOnly);
             }
 
-            if (search.DateTo.HasValue)
+            if (search.EndDate.HasValue)
             {
-                query = query.Where(m => m.GameStart <= search.DateTo);
+                DateOnly endDateOnly = DateOnly.FromDateTime(search.EndDate.Value);
+                query = query.Where(m => m.Date <= endDateOnly);
             }
 
             if (search.TournamentId.HasValue)
@@ -48,12 +52,10 @@ namespace KooliProjekt.Services
                 query = query.Where(m => m.TournamentId == search.TournamentId);
             }
 
-
-
             // Пагинация
             var totalCount = await query.CountAsync();
             var items = await query
-                .OrderBy(m => m.GameStart)
+                .OrderBy(m => m.Date) // Исправлено: было m.startDate
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -63,7 +65,7 @@ namespace KooliProjekt.Services
                 Items = items,
                 TotalCount = totalCount,
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
             };
         }
 
@@ -77,7 +79,7 @@ namespace KooliProjekt.Services
 
             var totalCount = await query.CountAsync();
             var items = await query
-                .OrderBy(m => m.GameStart)
+                .OrderBy(m => m.Date) // Исправлено: было m.GameStart
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -88,13 +90,12 @@ namespace KooliProjekt.Services
                 TotalCount = totalCount,
                 Page = page,
                 PageSize = pageSize,
-                PageCount = (int)Math.Ceiling(totalCount / (double)pageSize)
             };
         }
 
         public async Task<Match> GetById(int id)
         {
-            return await _context.Matches
+            return await _context.Matches // Исправлено: было _contexts
                 .Include(m => m.FirstTeam)
                 .Include(m => m.SecondTeam)
                 .Include(m => m.Tournament)
@@ -109,8 +110,13 @@ namespace KooliProjekt.Services
 
         public async Task Edit(Match match)
         {
-            _context.Matches.Update(match);
-            await _context.SaveChangesAsync();
+            // Более безопасный подход для редактирования
+            var existing = await _context.Matches.FindAsync(match.Id);
+            if (existing != null)
+            {
+                _context.Entry(existing).CurrentValues.SetValues(match);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task Delete(int id)
@@ -127,10 +133,5 @@ namespace KooliProjekt.Services
         {
             return await _context.Matches.AnyAsync(m => m.Id == id);
         }
-
-        //public Task List(int page, int pageSize, MatchSearch search)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

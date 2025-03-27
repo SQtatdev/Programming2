@@ -1,42 +1,56 @@
-﻿@model PagedResult<Ranking>
+﻿@model KooliProjekt.Models.PagedResult<KooliProjekt.Models.Ranking>
 
-    @{
-    ViewData["Title"] = "Index";
-    }
+@{
+    ViewData["Title"] = "Rankings";
+}
 
-    <h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"]</h1>
 
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Ranking</a>
+</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Total Points</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Results)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPoint)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this ranking?');">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+@if (Model?.Items?.Any() == true)
+{
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>User</th>
+                    <th>Total Points</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.User.Email)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.TotalPoints)</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this ranking?');">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+            }
+            </tbody>
+        </table>
 
-    <!-- Пагинация -->
-    @(await Component.InvokeAsync<PagerViewComponent>(Model))
+        <div class="pagination-info">
+            Showing @Model.Items.Count of @Model.TotalCount entries
+        </div>
+}
+else
+{
+        <div class="alert alert-warning">
+            No rankings found
+        </div>
+}
+
+@(await Component.InvokeAsync<PagerViewComponent>(Model))

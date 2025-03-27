@@ -9,69 +9,64 @@ namespace KooliProjekt.Controllers
     {
         private readonly ITeamService _teamService;
 
-        // Конструктор для внедрения зависимости ITeamService
+        // Конструктор с внедрением зависимости ITeamService
         public TeamsController(ITeamService teamService)
         {
             _teamService = teamService;
         }
 
-        // Метод для отображения списка команд с пагинацией
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        // GET: Teams
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            // Получаем данные с пагинацией
-            var data = await _teamService.List(page, pageSize);
-            return View(data);  // Передаем данные в представление
+            var result = await _teamService.List(page, pageSize);
+            return View(result);
         }
 
-        // Метод для отображения деталей команды
+        // GET: Teams/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем команду по ID
             var team = await _teamService.GetById(id.Value);
             return team == null ? NotFound() : View(team);
         }
 
-        // Метод для отображения формы создания команды
+        // GET: Teams/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // Метод для обработки данных и создания команды
+        // POST: Teams/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TeamName,TeamPlayers")] Team team)
+        public async Task<IActionResult> Create(Team team)
         {
             if (!ModelState.IsValid) return View(team);
 
-            // Сохраняем команду
             await _teamService.Save(team);
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы редактирования команды
+        // GET: Teams/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем команду по ID
             var team = await _teamService.GetById(id.Value);
             return team == null ? NotFound() : View(team);
         }
 
-        // Метод для обработки редактирования команды
+        // POST: Teams/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TeamName,TeamPlayers")] Team team)
+        public async Task<IActionResult> Edit(int id, Team team)
         {
             if (id != team.Id) return NotFound();
             if (!ModelState.IsValid) return View(team);
 
             try
             {
-                // Редактируем команду
                 await _teamService.Edit(team);
             }
             catch
@@ -83,22 +78,20 @@ namespace KooliProjekt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы удаления команды
+        // GET: Teams/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем команду по ID
             var team = await _teamService.GetById(id.Value);
             return team == null ? NotFound() : View(team);
         }
 
-        // Метод для удаления команды
+        // POST: Teams/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Удаляем команду
             await _teamService.Delete(id);
             return RedirectToAction(nameof(Index));
         }

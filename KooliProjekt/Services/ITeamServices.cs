@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
+
+
     public interface ITeamService
     {
         Task<PagedResult<Team>> List(int page, int pageSize);

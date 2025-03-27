@@ -1,48 +1,110 @@
-﻿@model PagedResult<Team>
+﻿@model KooliProjekt.Models.PagedResult<KooliProjekt.Models.Team>
 
-    @{
+@{
     ViewData["Title"] = "Team List";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="mb-4">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Team
+        </a>
+    </div>
+
+    @if (Model?.Items?.Any() == true)
+    {
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Team Name</th>
+                                    <th>Players</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var team in Model.Items)
+                            {
+                                        <tr>
+                                            <td class="align-middle">
+                                                <strong>@team.TeamName</strong>
+                                            </td>
+                                            <td class="align-middle">
+                                        @* Исправлено TeamPlayers на Players *@
+                                        @if (team.Players?.Any() == true)
+                                        {
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                @foreach (var player in team.Players)
+                                                {
+                                                    <span class="badge bg-primary">
+                                                        @player.PlayerName 
+                                                    </span>
+                                                }
+                                                }
+                                                        </div>
+                                        }
+                                        else
+                                        {
+                                                        <span class="text-muted">No players</span>
+                                        }
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Edit" 
+                                                       asp-route-id="@team.Id" 
+                                                       class="btn btn-sm btn-outline-secondary">
+                                                        <i class="bi bi-pencil"></i> Edit
+                                                    </a>
+                                                    <a asp-action="Details" 
+                                                       asp-route-id="@team.Id" 
+                                                       class="btn btn-sm btn-outline-info">
+                                                        <i class="bi bi-info-circle"></i> Details
+                                                    </a>
+                                                    <a asp-action="Delete" 
+                                                       asp-route-id="@team.Id" 
+                                                       class="btn btn-sm btn-outline-danger"
+                                                       onclick="return confirm('Are you sure you want to delete this team?');">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Showing @Model.Items.Count of @Model.TotalCount teams
+                        </div>
+                    @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                </div>
+            </div>
     }
+    else
+    {
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">No teams found!</h4>
+                <p>Start by creating your first team using the button above.</p>
+            </div>
+    }
+</div>
 
-    <h1>@ViewData["Title"]</h1>
-
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Team Name</th>
-                <th>Players</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Results)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.TeamName)</td>
-                <td>
-                    @* Assuming TeamPlayers is a list or collection, you can display the names like this *@
-                    @if (item.TeamPlayers != null && item.TeamPlayers.Any())
-                    {
-                    @string.Join(", ", item.TeamPlayers.Select(player => player.Name))
-                    }
-                    else
-                    {
-                    <span>No players assigned</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this team?');">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-
-    <!-- Пагинация -->
-    @(await Component.InvokeAsync<PagerViewComponent>(Model))
+@section Styles {
+        <style>
+            .table-hover tbody tr:hover {
+                background-color: #f8f9fa;
+                transition: background-color 0.2s ease;
+            }
+            .badge {
+                font-size: 0.9em;
+                padding: 0.5em 0.75em;
+            }
+        </style>
+}

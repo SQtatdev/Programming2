@@ -1,54 +1,82 @@
-﻿@model PagedResult<Tournament>
+﻿@model KooliProjekt.Models.PagedResult<KooliProjekt.Models.Tournament>
 
-    @{
+@{
     ViewData["Title"] = "Tournament List";
-    }
+}
 
-    <h1>@ViewData["Title"]</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Create New
+        </a>
     </p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Tournament Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Part</th>
-                <th>Information</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Results)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TournmentName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TournamentStart.ToString("yyyy-MM-dd"))
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TournamentEnd.ToString("yyyy-MM-dd"))
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TournamentPart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TournamentInfo)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this tournament?');">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    @if (Model?.Items?.Any() == true)
+    {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Tournament Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Part</th>
+                            <th>Information</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@item.TournamentStart.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.TournamentEnd.ToString("yyyy-MM-dd")</td>
+                                    <td>@Html.DisplayFor(modelItem => item.TournamentPart)</td>
+                                    <td class="text-truncate" style="max-width: 200px;">
+                                @item.TournamentInfo
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-outline-primary">Edit</a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-outline-info">Details</a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Delete this tournament?');">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
 
-    <!-- Пагинация -->
-    @(await Component.InvokeAsync<PagerViewComponent>(Model))
+            <div class="mt-4">
+            @await Component.InvokeAsync("Pager", Model)
+            </div>
+    }
+    else
+    {
+            <div class="alert alert-warning">
+                No tournaments found
+            </div>
+    }
+</div>
+
+@section Styles {
+        <style>
+            .table-hover tbody tr:hover {
+                background-color: #f8f9fa;
+                cursor: pointer;
+            }
+            .text-truncate {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
+}

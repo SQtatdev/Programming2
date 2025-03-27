@@ -1,8 +1,10 @@
 ﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
+using ApplicationDbContext = KooliProjekt.Data.ApplicationDbContext;
 
 namespace KooliProjekt
 {
@@ -18,23 +20,21 @@ namespace KooliProjekt
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             // 1. Регистрация контекста базы данных
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Services.AddDbContext<Data.ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             // 2. Регистрация Identity с кастомным пользователем
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = true;
-                options.Password.RequireNonAlphanumeric = false; // Пример настройки политик
-            })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             // 3. Регистрация сервисов приложения
             builder.Services.AddScoped<IMatchService, MatchService>();
             builder.Services.AddScoped<IPredictionService, PredictionService>();
-            builder.Services.AddScoped<IRankingService, RankingService>();
+            builder.Services.AddScoped<IRankingService, RankingServices>();
             builder.Services.AddScoped<ITeamService, TeamService>();
             builder.Services.AddScoped<ITournamentService, TournamentService>();
+
 
             // 4. Настройка контроллеров и Razor Pages
             builder.Services.AddControllersWithViews();
@@ -65,6 +65,13 @@ namespace KooliProjekt
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
+            // Program.cs
+            builder.Services.AddCors(options =>
+                options.AddPolicy("AllowAll", policy =>
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()));
+
             // 5. Заполнение базы начальными данными с обработкой ошибок
             using (var scope = app.Services.CreateScope())
             {
@@ -73,10 +80,10 @@ namespace KooliProjekt
 
                 try
                 {
-                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var context = services.GetRequiredService<Data.ApplicationDbContext>();
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     await SeedData.GenerateAsync(context, userManager);
-                }
+                } 
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "Ошибка при заполнении базы данных");

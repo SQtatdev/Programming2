@@ -16,7 +16,7 @@
         <input type="date" class="form-control" 
                id="Search_DateFrom" 
                name="Search.DateFrom" 
-               value="@Model.Search.DateFrom?.ToString("yyyy-MM-dd")" />
+               value="@Model.Search.StartDate?.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="form-group">
@@ -24,7 +24,7 @@
         <input type="date" class="form-control" 
                id="Search_DateTo" 
                name="Search.DateTo" 
-               value="@Model.Search.DateTo?.ToString("yyyy-MM-dd")" />
+               value="@Model.Search.EndDate?.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="form-group">
@@ -70,7 +70,7 @@ else
                             <td>@match.FirstTeam.TeamName</td>
                             <td>@match.SecondTeam.TeamName</td>
                             <td>@match.GameStart.ToString("yyyy-MM-dd")</td>
-                            <td>@match.Tournament.TournamentName</td>
+                            <td>@match.Tournament.Name</td>
                         </tr>
             }
             </tbody>

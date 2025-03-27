@@ -13,7 +13,7 @@ namespace KooliProjekt.Models
         public string TournamentInfo { get; set; }
 
 
-        public IList<Match> Matches { get; set; }
+        public List<Match> Matches { get; set; } = new List<Match>();
         public IList<Ranking> rankings { get; set; }
 
         public Tournament()

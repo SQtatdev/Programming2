@@ -1,6 +1,5 @@
-﻿using KooliProjekt.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Mvc;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Components
 {

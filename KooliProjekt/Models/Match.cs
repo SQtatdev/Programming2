@@ -1,19 +1,22 @@
-﻿using KooliProjekt.Data;
-using KooliProjekt.Models;
+﻿using KooliProjekt.Models;
 
-namespace KooliProjekt.Data
+namespace KooliProjekt.Models
 {
     public class Match
     {
         public int Id { get; set; }
+        public DateOnly Date { get; set; } // Основное свойство даты
         public int FirstTeamId { get; set; }
         public int SecondTeamId { get; set; }
-        public DateTime GameStart { get; set; }
         public int TournamentId { get; set; }
 
-        // Навигационные свойства
-        public required Team FirstTeam { get; set; }
-        public required Team SecondTeam { get; set; }
-        public required Tournament Tournament { get; set; }
+        public Team FirstTeam { get; set; }
+        public Team SecondTeam { get; set; }
+        public Tournament Tournament { get; set; }
+
+        public DateOnly GameStart { get; set; }
+        public DateOnly GameEnd { get; set; }
+
+        public int winner { get; set; }
     }
 }

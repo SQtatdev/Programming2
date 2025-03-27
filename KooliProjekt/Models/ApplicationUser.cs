@@ -1,7 +1,11 @@
 ﻿// Models/ApplicationUser.cs
 using Microsoft.AspNetCore.Identity;
 
-public class ApplicationUser : IdentityUser
+namespace KooliProjekt.Models
 {
-    public string? FullName { get; set; } // Пример дополнительного поля
+    public class ApplicationUser : IdentityUser
+    {
+        // Дополнительные свойства
+        public string? CustomField { get; set; }
+    }
 }

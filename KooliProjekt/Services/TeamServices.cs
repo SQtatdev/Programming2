@@ -61,6 +61,12 @@ namespace KooliProjekt.Services
             await SaveChangesWithExceptionHandling();
         }
 
+        public async Task Edit(Team team)
+        {
+            _context.Teams.Update(team);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> Exists(int id)
         {
             return await _context.Teams.AnyAsync(t => t.Id == id);
@@ -83,8 +89,7 @@ namespace KooliProjekt.Services
                 Items = items,
                 TotalCount = totalCount,
                 Page = page,
-                PageSize = pageSize,
-                PageCount = (int)Math.Ceiling(totalCount / (double)pageSize)
+                PageSize = pageSize
             };
         }
 

@@ -1,7 +1,6 @@
 ﻿using Bogus;
 using KooliProjekt.Models;
 using KooliProjekt.Data;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +10,10 @@ namespace KooliProjekt.Data
     {
         public static async Task GenerateAsync(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager) // Изменили IdentityUser → ApplicationUser
         {
             // Генерация пользователей
-            var userFaker = new Faker<IdentityUser>()
+            var userFaker = new Faker<ApplicationUser>() // Исправлен тип
                 .RuleFor(u => u.UserName, f => f.Internet.Email())
                 .RuleFor(u => u.Email, f => f.Internet.Email())
                 .RuleFor(u => u.EmailConfirmed, true);
@@ -22,7 +21,11 @@ namespace KooliProjekt.Data
             var users = userFaker.Generate(5);
             foreach (var user in users)
             {
-                await userManager.CreateAsync(user, "Password123!");
+                var result = await userManager.CreateAsync(user, "Password123!");
+                if (!result.Succeeded)
+                {
+                    throw new Exception($"Ошибка создания пользователя: {string.Join(", ", result.Errors)}");
+                }
             }
 
             // Генерация команд
@@ -31,7 +34,6 @@ namespace KooliProjekt.Data
 
             var teams = teamFaker.Generate(10);
             await context.Teams.AddRangeAsync(teams);
-            await context.SaveChangesAsync();
 
             // Генерация турниров
             var tournamentFaker = new Faker<Tournament>()
@@ -39,17 +41,19 @@ namespace KooliProjekt.Data
 
             var tournaments = tournamentFaker.Generate(5);
             await context.Tournaments.AddRangeAsync(tournaments);
-            await context.SaveChangesAsync();
+
+            await context.SaveChangesAsync(); // Сохраняем команды и турниры вместе
 
             // Генерация матчей
             var matchFaker = new Faker<Match>()
                 .RuleFor(m => m.FirstTeamId, f => f.PickRandom(teams).Id)
                 .RuleFor(m => m.SecondTeamId, f => f.PickRandom(teams).Id)
                 .RuleFor(m => m.TournamentId, f => f.PickRandom(tournaments).Id)
-                .RuleFor(m => m.GameStart, f => f.Date.Future());
+                .RuleFor(m => m.Date, (f, m) => DateOnly.FromDateTime(f.Date.Future()));
 
             var matches = matchFaker.Generate(50);
             await context.Matches.AddRangeAsync(matches);
+
             await context.SaveChangesAsync();
         }
     }

@@ -1,4 +1,4 @@
-﻿@model KooliProjekt.Data.Match
+﻿@model KooliProjekt.Models.Match
 
 @{
     ViewData["Title"] = "Edit";
@@ -34,14 +34,14 @@
                 <span asp-validation-for="GameStart" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FirstTeamScore" class="control-label"></label>
-                <input asp-for="FirstTeamScore" class="form-control" />
-                <span asp-validation-for="FirstTeamScore" class="text-danger"></span>
+                <label asp-for="FirstTeam" class="control-label"></label>
+                <input asp-for="FirstTeam" class="form-control" />
+                <span asp-validation-for="FirstTeam" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SecondTeamScore" class="control-label"></label>
-                <input asp-for="SecondTeamScore" class="form-control" />
-                <span asp-validation-for="SecondTeamScore" class="text-danger"></span>
+                <label asp-for="SecondTeam" class="control-label"></label>
+                <input asp-for="SecondTeam" class="form-control" />
+                <span asp-validation-for="SecondTeam" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="winner" class="control-label"></label>

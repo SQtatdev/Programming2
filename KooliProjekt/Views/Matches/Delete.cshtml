@@ -1,4 +1,4 @@
-﻿@model KooliProjekt.Data.Match
+﻿@model KooliProjekt.Models.Match
 
 @{
     ViewData["Title"] = "Delete";
@@ -36,16 +36,16 @@
             @Html.DisplayFor(model => model.GameStart)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstTeamScore)
+            @Html.DisplayNameFor(model => model.FirstTeam)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstTeamScore)
+            @Html.DisplayFor(model => model.FirstTeam)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SecondTeamScore)
+            @Html.DisplayNameFor(model => model.SecondTeam)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SecondTeamScore)
+            @Html.DisplayFor(model => model.SecondTeam)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.winner)
