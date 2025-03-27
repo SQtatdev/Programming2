@@ -1,13 +1,14 @@
-﻿using KooliProjekt.Data;
+﻿using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace KooliProjekt.Components
 {
     public class PagerViewComponent : ViewComponent
     {
-        public Task<IViewComponentResult> InvokeAsync(PagedResultBase result)
+        public IViewComponentResult Invoke(PagedResult<Match> model)
         {
-            return Task.FromResult((IViewComponentResult)View("Default", result));
+            return View(model);
         }
     }
 }

@@ -1,29 +1,39 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using KooliProjekt.Models;
+using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<Match> Matches { get; set; }
         public DbSet<Prediction> Predictions { get; set; }
-        public DbSet<ranking> rankings { get; set; }
-        public DbSet<Team> teams { get; set; }
-        public DbSet<Tournament> tournaments { get; set; }
-        public object TodoLists { get; internal set; }
+        public DbSet<Team> Teams { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<Tournament> Tournaments { get; set; }
+
+        public DbSet<Ranking> Rankings { get; set; }
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            { 
-                relationship.DeleteBehavior = DeleteBehavior.ClientCascade;
-            }
-            base.OnModelCreating(builder);
+            modelBuilder.Entity<Match>()
+                .HasOne(m => m.FirstTeam)
+                .WithMany()
+                .HasForeignKey(m => m.FirstTeamId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Match>()
+                .HasOne(m => m.SecondTeam)
+                .WithMany()
+                .HasForeignKey(m => m.SecondTeamId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Match>()
+                .HasOne(m => m.Tournament)
+                .WithMany()
+                .HasForeignKey(m => m.TournamentId);
         }
-    } 
+    }
 }

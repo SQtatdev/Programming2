@@ -2,9 +2,9 @@
 {
     public class MatchSearch
     {
-        public string TeamName { get; set; }  // Фильтрация по названию команды
-        public DateTime? DateFrom { get; set; }  // Фильтрация по дате начала матча (от)
-        public DateTime? DateTo { get; set; }  // Фильтрация по дате начала матча (до)
-        public int? TournamentId { get; set; }  // Фильтрация по идентификатору турнира
+        public string? TeamName { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public int? TournamentId { get; set; }
     }
 }

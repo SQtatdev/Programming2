@@ -1,4 +1,5 @@
-﻿using KooliProjekt.Models;
+﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

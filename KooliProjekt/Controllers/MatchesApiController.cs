@@ -1,5 +1,5 @@
 ﻿using KooliProjekt.Services;
-using KooliProjekt.Search;
+using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

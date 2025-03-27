@@ -13,28 +13,39 @@ namespace KooliProjekt
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Добавьте сервисы в контейнер
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            // Регистрация сервисов
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+            // 1. Регистрация контекста базы данных
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
+            // 2. Регистрация Identity с кастомным пользователем
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireNonAlphanumeric = false; // Пример настройки политик
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            // Регистрируем все сервисы
+            // 3. Регистрация сервисов приложения
             builder.Services.AddScoped<IMatchService, MatchService>();
             builder.Services.AddScoped<IPredictionService, PredictionService>();
             builder.Services.AddScoped<IRankingService, RankingService>();
             builder.Services.AddScoped<ITeamService, TeamService>();
             builder.Services.AddScoped<ITournamentService, TournamentService>();
 
+            // 4. Настройка контроллеров и Razor Pages
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
+
             var app = builder.Build();
 
-            // Настройка конвейера обработки HTTP-запросов
+            // Конфигурация middleware
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
             else
@@ -45,9 +56,7 @@ namespace KooliProjekt
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -56,14 +65,22 @@ namespace KooliProjekt
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            // Генерация данных при старте приложения
+            // 5. Заполнение базы начальными данными с обработкой ошибок
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                var logger = services.GetRequiredService<ILogger<Program>>();
 
-                await SeedData.GenerateAsync(context, userManager); // Генерация данных
+                try
+                {
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    await SeedData.GenerateAsync(context, userManager);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Ошибка при заполнении базы данных");
+                }
             }
 
             app.Run();

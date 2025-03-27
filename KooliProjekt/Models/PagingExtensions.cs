@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace KooliProjekt.Data
+namespace KooliProjekt.Models
 {
     public static class PagingExtensions
     {
-
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int page, int pageSize) where T : class
         {
             page = Math.Max(page, 1);
@@ -24,7 +27,7 @@ namespace KooliProjekt.Data
             result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
+            result.Items = await query.Skip(skip).Take(pageSize).ToListAsync();
 
             return result;
         }

@@ -1,6 +1,9 @@
-﻿using KooliProjekt.Models;
+﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
@@ -8,59 +11,72 @@ namespace KooliProjekt.Controllers
     public class MatchesController : Controller
     {
         private readonly IMatchService _matchService;
+        private readonly ApplicationDbContext _context;
 
-        public MatchesController(IMatchService matchService)
+        // Конструктор (без конфликта имен)
+        public MatchesController(IMatchService matchService, ApplicationDbContext context)
         {
             _matchService = matchService;
+            _context = context;
         }
 
-        // Метод для отображения списка матчей с пагинацией
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        // Метод Index с пагинацией и поиском
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10,
+            MatchSearch? search = null) // Указание nullable для параметра
         {
-            // Получаем данные с пагинацией
-            var data = await _matchService.List(page, pageSize);
-            return View(data);  // Передаем данные в представление
+            ViewBag.Tournaments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                await _context.Tournaments.ToListAsync(),
+                "Id",
+                "TournamentName"
+            );
+
+            var model = new MatchesIndexModel
+            {
+                Matches = await _matchService.List(page, pageSize, search),
+                Search = search ?? new MatchSearch()
+            };
+
+            return View(model);
         }
 
-        // Метод для отображения деталей матча
+        // Метод Details (обработка nullable ID)
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем матч по ID
             var match = await _matchService.GetById(id.Value);
             return match == null ? NotFound() : View(match);
         }
 
-        // Метод для отображения формы создания матча
+        // Метод Create (GET)
         public IActionResult Create()
         {
             return View();
         }
 
-        // Метод для обработки данных и создания матча
+        // Метод Create (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
         {
             if (!ModelState.IsValid) return View(match);
 
-            // Сохраняем матч
             await _matchService.Save(match);
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы редактирования матча
+        // Метод Edit (GET)
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем матч по ID
             var match = await _matchService.GetById(id.Value);
             return match == null ? NotFound() : View(match);
         }
 
-        // Метод для обработки редактирования матча
+        // Метод Edit (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
@@ -70,7 +86,6 @@ namespace KooliProjekt.Controllers
 
             try
             {
-                // Редактируем матч
                 await _matchService.Edit(match);
             }
             catch
@@ -82,22 +97,20 @@ namespace KooliProjekt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы удаления матча
+        // Метод Delete (GET)
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем матч по ID
             var match = await _matchService.GetById(id.Value);
             return match == null ? NotFound() : View(match);
         }
 
-        // Метод для удаления матча
+        // Метод Delete (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Удаляем матч
             await _matchService.Delete(id);
             return RedirectToAction(nameof(Index));
         }

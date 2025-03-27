@@ -5,100 +5,101 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
-    public class RankingsController : Controller
+    public class TeamsController : Controller
     {
-        private readonly IRankingService _rankingService;
+        private readonly ITeamService _teamService;
 
-        public RankingsController(IRankingService rankingService)
+        // Конструктор для внедрения зависимости ITeamService
+        public TeamsController(ITeamService teamService)
         {
-            _rankingService = rankingService;
+            _teamService = teamService;
         }
 
-        // Метод для отображения списка рейтингов с пагинацией
+        // Метод для отображения списка команд с пагинацией
         public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             // Получаем данные с пагинацией
-            var data = await _rankingService.List(page, pageSize);
+            var data = await _teamService.List(page, pageSize);
             return View(data);  // Передаем данные в представление
         }
 
-        // Метод для отображения деталей рейтинга
+        // Метод для отображения деталей команды
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем рейтинг по ID
-            var ranking = await _rankingService.GetById(id.Value);
-            return ranking == null ? NotFound() : View(ranking);
+            // Получаем команду по ID
+            var team = await _teamService.GetById(id.Value);
+            return team == null ? NotFound() : View(team);
         }
 
-        // Метод для отображения формы создания рейтинга
+        // Метод для отображения формы создания команды
         public IActionResult Create()
         {
             return View();
         }
 
-        // Метод для обработки данных и создания рейтинга
+        // Метод для обработки данных и создания команды
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TournamentId,UserId,TotalPoint")] Ranking ranking)
+        public async Task<IActionResult> Create([Bind("Id,TeamName,TeamPlayers")] Team team)
         {
-            if (!ModelState.IsValid) return View(ranking);
+            if (!ModelState.IsValid) return View(team);
 
-            // Сохраняем рейтинг
-            await _rankingService.Save(ranking);
+            // Сохраняем команду
+            await _teamService.Save(team);
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы редактирования рейтинга
+        // Метод для отображения формы редактирования команды
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем рейтинг по ID
-            var ranking = await _rankingService.GetById(id.Value);
-            return ranking == null ? NotFound() : View(ranking);
+            // Получаем команду по ID
+            var team = await _teamService.GetById(id.Value);
+            return team == null ? NotFound() : View(team);
         }
 
-        // Метод для обработки редактирования рейтинга
+        // Метод для обработки редактирования команды
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TournamentId,UserId,TotalPoint")] Ranking ranking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TeamName,TeamPlayers")] Team team)
         {
-            if (id != ranking.Id) return NotFound();
-            if (!ModelState.IsValid) return View(ranking);
+            if (id != team.Id) return NotFound();
+            if (!ModelState.IsValid) return View(team);
 
             try
             {
-                // Редактируем рейтинг
-                await _rankingService.Edit(ranking);
+                // Редактируем команду
+                await _teamService.Edit(team);
             }
             catch
             {
-                if (!await _rankingService.Exists(ranking.Id)) return NotFound();
+                if (!await _teamService.Exists(team.Id)) return NotFound();
                 throw;
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // Метод для отображения формы удаления рейтинга
+        // Метод для отображения формы удаления команды
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            // Получаем рейтинг по ID
-            var ranking = await _rankingService.GetById(id.Value);
-            return ranking == null ? NotFound() : View(ranking);
+            // Получаем команду по ID
+            var team = await _teamService.GetById(id.Value);
+            return team == null ? NotFound() : View(team);
         }
 
-        // Метод для удаления рейтинга
+        // Метод для удаления команды
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Удаляем рейтинг
-            await _rankingService.Delete(id);
+            // Удаляем команду
+            await _teamService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

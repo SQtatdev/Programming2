@@ -14,15 +14,12 @@ namespace KooliProjekt.Controllers
             _predictionService = predictionService;
         }
 
-        // Метод для отображения списка предсказаний с пагинацией
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        // GET: Predictions
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            // Получаем данные с пагинацией
-            var data = await _predictionService.List(page, pageSize);
-            return View(data);  // Передаем данные в представление
+            var predictions = await _predictionService.List(page, pageSize);
+            return View(predictions);
         }
-
-        // Метод для отображения деталей предсказания
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
