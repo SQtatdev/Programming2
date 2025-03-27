@@ -1,4 +1,4 @@
-﻿@model KooliProjekt.Data.Prediction
+﻿@model KooliProjekt.Models.Prediction
 
 @{
     ViewData["Title"] = "Create";
@@ -13,9 +13,9 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MacthId" class="control-label"></label>
-                <input asp-for="MacthId" class="form-control" />
-                <span asp-validation-for="MacthId" class="text-danger"></span>
+                <label asp-for="MatchId" class="control-label"></label>
+                <input asp-for="MatchId" class="form-control" />
+                <span asp-validation-for="MatchId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
@@ -23,9 +23,9 @@
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PredictedScroteFirstTeam" class="control-label"></label>
-                <input asp-for="PredictedScroteFirstTeam" class="form-control" />
-                <span asp-validation-for="PredictedScroteFirstTeam" class="text-danger"></span>
+                <label asp-for="PredictedScoreFirstTeam" class="control-label"></label>
+                <input asp-for="PredictedScoreFirstTeam" class="form-control" />
+                <span asp-validation-for="PredictedScoreFirstTeam" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PredictedScoreSecondTeam" class="control-label"></label>
@@ -33,9 +33,9 @@
                 <span asp-validation-for="PredictedScoreSecondTeam" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="punktid" class="control-label"></label>
-                <input asp-for="punktid" class="form-control" />
-                <span asp-validation-for="punktid" class="text-danger"></span>
+                <label asp-for="Punktid" class="control-label"></label>
+                <input asp-for="Punktid" class="form-control" />
+                <span asp-validation-for="Punktid" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

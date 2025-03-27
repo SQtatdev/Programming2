@@ -1,4 +1,5 @@
 ﻿namespace KooliProjekt.Models
+
 {
     public class User
     {

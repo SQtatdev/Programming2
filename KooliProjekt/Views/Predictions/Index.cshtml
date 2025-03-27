@@ -1,4 +1,6 @@
-﻿@model PagedResult<Prediction>
+﻿@using KooliProjekt.Models
+@model PagedResult<Prediction>
+
 
     @{
     ViewData["Title"] = "Index";
@@ -22,7 +24,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Results)
+        @foreach (var item in Models.Results)
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.MatchId)</td>

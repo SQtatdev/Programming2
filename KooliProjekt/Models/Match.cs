@@ -1,4 +1,5 @@
-﻿using KooliProjekt.Models;
+﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Data
 {

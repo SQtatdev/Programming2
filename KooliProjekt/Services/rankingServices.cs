@@ -17,49 +17,49 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Ranking>> List(int page, int pageSize)
         {
-            var query = _context.rankings.OrderBy(r => r.Id).AsNoTracking();
+            var query = _context.Rankings.OrderBy(r => r.Id).AsNoTracking();
             var totalCount = await query.CountAsync();
             var rankings = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return new PagedResult<Ranking>
             {
-                Items = ranking,
+                Items = rankings,
                 TotalCount = totalCount,
-                PageNumber = page,
+                Page = page,
                 PageSize = pageSize
             };
         }
 
         public async Task<Ranking> GetById(int id)
         {
-            return await _context.rankings.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Rankings.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task Save(Ranking ranking)
         {
-            _context.rankings.Add(ranking);
+            _context.Rankings.Add(ranking);
             await _context.SaveChangesAsync();
         }
 
         public async Task Edit(Ranking ranking)
         {
-            _context.rankings.Update(ranking);
+            _context.Rankings.Update(ranking);
             await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
         {
-            var ranking = await _context.rankings.FindAsync(id);
+            var ranking = await _context.Rankings.FindAsync(id);
             if (ranking != null)
             {
-                _context.rankings.Remove(ranking);
+                _context.Rankings.Remove(ranking);
                 await _context.SaveChangesAsync();
             }
         }
 
         public async Task<bool> Exists(int id)
         {
-            return await _context.rankings.AnyAsync(r => r.Id == id);
+            return await _context.Rankings.AnyAsync(r => r.Id == id);
         }
     }
 }

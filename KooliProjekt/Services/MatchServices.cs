@@ -48,6 +48,8 @@ namespace KooliProjekt.Services
                 query = query.Where(m => m.TournamentId == search.TournamentId);
             }
 
+
+
             // Пагинация
             var totalCount = await query.CountAsync();
             var items = await query
@@ -60,8 +62,33 @@ namespace KooliProjekt.Services
             {
                 Items = items,
                 TotalCount = totalCount,
-                PageNumber = page,
+                Page = page,
                 PageSize = pageSize
+            };
+        }
+
+        public async Task<PagedResult<Match>> List(int page, int pageSize)
+        {
+            var query = _context.Matches
+                .Include(m => m.FirstTeam)
+                .Include(m => m.SecondTeam)
+                .Include(m => m.Tournament)
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .OrderBy(m => m.GameStart)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Match>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                PageCount = (int)Math.Ceiling(totalCount / (double)pageSize)
             };
         }
 
@@ -101,9 +128,9 @@ namespace KooliProjekt.Services
             return await _context.Matches.AnyAsync(m => m.Id == id);
         }
 
-        public Task List(int page, int pageSize, MatchSearch search)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task List(int page, int pageSize, MatchSearch search)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

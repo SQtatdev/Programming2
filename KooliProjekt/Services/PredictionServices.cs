@@ -25,7 +25,7 @@ namespace KooliProjekt.Services
             {
                 Items = predictions,
                 TotalCount = totalCount,
-                PageNumber = page,
+                Page = page,
                 PageSize = pageSize
             };
         }

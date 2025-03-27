@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,60 +9,118 @@ namespace KooliProjekt.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public TeamService(ApplicationDbContext context)
+        public TeamService(Data.ApplicationDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<PagedResult<Team>> List(int page, int pageSize)
         {
-            // Исправлено: _context.Teams (с заглавной буквы)
-            var query = _context.Teams.OrderBy(t => t.Id).AsNoTracking();
-            var totalCount = await query.CountAsync();
-            var teams = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            ValidatePaginationParameters(page, pageSize);
 
-            return new PagedResult<Team>
-            {
-                Items = teams,
-                TotalCount = totalCount,
-                Page = page, // Исправлено: Page вместо PageNumber (если используется PagedResult<T> из предыдущих примеров)
-                PageSize = pageSize
-            };
+            var query = _context.Teams.OrderBy(t => t.Id).AsNoTracking();
+
+            var totalCount = await query.CountAsync();
+            var items = await GetPagedItems(query, page, pageSize);
+
+            return CreatePagedResult(items, totalCount, page, pageSize);
         }
 
         public async Task<Team> GetById(int id)
         {
-            // Убрано AsNoTracking(), если планируется редактирование
-            return await _context.Teams.FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Teams
+                .FirstOrDefaultAsync(t => t.Id == id)
+                ?? throw new KeyNotFoundException($"Team with id {id} not found");
         }
 
         public async Task Save(Team team)
         {
+            ValidateTeam(team);
+
             _context.Teams.Add(team);
-            await _context.SaveChangesAsync();
+            await SaveChangesWithExceptionHandling();
         }
 
-        public async Task Edit(Team team)
+        public async Task Update(Team team)
         {
-            _context.Entry(team).State = EntityState.Modified; // Более явное обновление
-            await _context.SaveChangesAsync();
+            ValidateTeam(team);
+
+            var existingTeam = await GetExistingTeam(team.Id);
+            _context.Entry(existingTeam).CurrentValues.SetValues(team);
+
+            await SaveChangesWithExceptionHandling();
         }
 
         public async Task Delete(int id)
         {
-            var team = await _context.Teams.FindAsync(id);
-            if (team != null)
-            {
-                _context.Teams.Remove(team);
-                await _context.SaveChangesAsync();
-            }
+            var team = await GetExistingTeam(id);
+
+            _context.Teams.Remove(team);
+            await SaveChangesWithExceptionHandling();
         }
 
         public async Task<bool> Exists(int id)
         {
             return await _context.Teams.AnyAsync(t => t.Id == id);
         }
+
+        #region Helper Methods
+
+        private async Task<List<Team>> GetPagedItems(IQueryable<Team> query, int page, int pageSize)
+        {
+            return await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        private PagedResult<Team> CreatePagedResult(List<Team> items, int totalCount, int page, int pageSize)
+        {
+            return new PagedResult<Team>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                PageCount = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+        }
+
+        private void ValidatePaginationParameters(int page, int pageSize)
+        {
+            if (page < 1)
+                throw new ArgumentException("Page number must be at least 1", nameof(page));
+
+            if (pageSize < 1 || pageSize > 100)
+                throw new ArgumentException("Page size must be between 1 and 100", nameof(pageSize));
+        }
+
+        private void ValidateTeam(Team team)
+        {
+            if (team == null)
+                throw new ArgumentNullException(nameof(team));
+        }
+
+        private async Task<Team> GetExistingTeam(int id)
+        {
+            return await _context.Teams.FindAsync(id)
+                ?? throw new KeyNotFoundException($"Team with id {id} not found");
+        }
+
+        private async Task SaveChangesWithExceptionHandling()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Database operation failed", ex);
+            }
+        }
+
+        #endregion
     }
 }

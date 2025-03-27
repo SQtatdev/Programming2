@@ -1,8 +1,10 @@
 ﻿using KooliProjekt.Services;
+using KooliProjekt.Data;
 using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using KooliProjekt.Search;
 
 [Route("api/[controller]")]
 [ApiController]

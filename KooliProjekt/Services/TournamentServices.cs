@@ -9,10 +9,10 @@ namespace KooliProjekt.Services
 {
     public class TournamentService : ITournamentService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
         // Конструктор для внедрения зависимости ApplicationDbContext
-        public TournamentService(ApplicationDbContext context)
+        public TournamentService(Data.ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -20,7 +20,7 @@ namespace KooliProjekt.Services
         // Получение турниров с пагинацией
         public async Task<PagedResult<Tournament>> List(int page, int pageSize)
         {
-            var query = _context.tournaments.OrderBy(t => t.TournamentStart).AsNoTracking(); // Не отслеживаем изменения для повышения производительности
+            var query = _context.Tournaments.OrderBy(t => t.TournamentStart).AsNoTracking(); // Не отслеживаем изменения для повышения производительности
             var totalCount = await query.CountAsync(); // Получаем общее количество турниров
             var tournaments = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(); // Получаем турниры для текущей страницы
 
@@ -28,7 +28,7 @@ namespace KooliProjekt.Services
             {
                 Items = tournaments, // tournaments — это List<Tournament>
                 TotalCount = totalCount,
-                PageNumber = page,
+                Page = page,
                 PageSize = pageSize
             };
         }
@@ -36,7 +36,7 @@ namespace KooliProjekt.Services
         // Получение турнира по ID
         public async Task<Tournament> GetById(int id)
         {
-            return await _context.tournaments
+            return await _context.Tournaments
                 .AsNoTracking() // Для повышения производительности
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
@@ -47,7 +47,7 @@ namespace KooliProjekt.Services
             if (tournament == null)
                 throw new ArgumentNullException(nameof(tournament), "Tournament cannot be null.");
 
-            _context.tournaments.Add(tournament);
+            _context.Tournaments.Add(tournament);
             await _context.SaveChangesAsync();
         }
 
@@ -57,25 +57,25 @@ namespace KooliProjekt.Services
             if (tournament == null)
                 throw new ArgumentNullException(nameof(tournament), "Tournament cannot be null.");
 
-            _context.tournaments.Update(tournament);
+            _context.Tournaments.Update(tournament);
             await _context.SaveChangesAsync();
         }
 
         // Удаление турнира
         public async Task Delete(int id)
         {
-            var tournament = await _context.tournaments.FindAsync(id);
+            var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)
                 throw new KeyNotFoundException($"Tournament with ID {id} not found.");
 
-            _context.tournaments.Remove(tournament);
+            _context.Tournaments.Remove(tournament);
             await _context.SaveChangesAsync();
         }
 
         // Проверка существования турнира
         public async Task<bool> Exists(int id)
         {
-            return await _context.tournaments.AnyAsync(t => t.Id == id);
+            return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
     }
 }
