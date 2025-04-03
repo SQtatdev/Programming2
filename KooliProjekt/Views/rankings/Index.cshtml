@@ -1,4 +1,4 @@
-﻿@model KooliProjekt.Models.PagedResult<KooliProjekt.Models.Ranking>
+﻿@model KooliProjekt.Models.MatchesIndexModel
 
 @{
     ViewData["Title"] = "Rankings";
@@ -25,7 +25,7 @@
             {
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.User.Email)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.TotalPoints)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TotalPoints)</td>
                             <td>
                                 <div class="btn-group">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
@@ -43,7 +43,7 @@
         </table>
 
         <div class="pagination-info">
-            Showing @Model.Items.Count of @Model.TotalCount entries
+            Showing @Model.Items.Count of @Model.RowCount entries
         </div>
 }
 else

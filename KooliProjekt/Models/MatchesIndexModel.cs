@@ -7,5 +7,6 @@ namespace KooliProjekt.Models
     {
         public MatchSearch Search { get; set; } = new();
         public PagedResult<Match> Matches { get; set; } = new();
+
     }
 }

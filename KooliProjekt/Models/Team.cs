@@ -10,5 +10,7 @@ namespace KooliProjekt.Models
         public List<Player> Players { get; set; } = new List<Player>();
         public List<Match> HomeMatches { get; set; } = new List<Match>();
         public List<Match> AwayMatches { get; set; } = new List<Match>();
+
+
     }
 }
