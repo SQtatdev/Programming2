@@ -18,16 +18,8 @@ namespace KooliProjekt.Services
         public async Task<PagedResult<Ranking>> List(int page, int pageSize)
         {
             var query = _context.Rankings.OrderBy(r => r.Id).AsNoTracking();
-            var totalCount = await query.CountAsync();
-            var rankings = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return new PagedResult<Ranking>
-            {
-                Items = rankings,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
-            };
+            return await query.ToPagedResult(page, pageSize);
         }
 
         public async Task<Ranking> GetById(int id)

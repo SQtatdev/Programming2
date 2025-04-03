@@ -18,16 +18,8 @@ namespace KooliProjekt.Services
         public async Task<PagedResult<Prediction>> List(int page, int pageSize)
         {
             var query = _context.Predictions.OrderBy(p => p.Id).AsNoTracking();
-            var totalCount = await query.CountAsync();
-            var predictions = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return new PagedResult<Prediction>
-            {
-                Items = predictions,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
-            };
+            return await query.ToPagedResult(page, pageSize);
         }
 
         public async Task<Prediction> GetById(int id)

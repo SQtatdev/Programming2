@@ -21,16 +21,8 @@ namespace KooliProjekt.Services
         public async Task<PagedResult<Tournament>> List(int page, int pageSize)
         {
             var query = _context.Tournaments.OrderBy(t => t.TournamentStart).AsNoTracking(); // Не отслеживаем изменения для повышения производительности
-            var totalCount = await query.CountAsync(); // Получаем общее количество турниров
-            var tournaments = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(); // Получаем турниры для текущей страницы
 
-            return new PagedResult<Tournament>
-            {
-                Items = tournaments, // tournaments — это List<Tournament>
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
-            };
+            return await query.ToPagedResult(page, pageSize);
         }
 
         // Получение турнира по ID

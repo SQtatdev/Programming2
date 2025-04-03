@@ -3,8 +3,8 @@
     public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int TeamId { get; set; }
-        public Team Team { get; set; }
+        public required Team Team { get; set; }
     }
 }

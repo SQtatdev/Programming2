@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.UnitTests.ServiceTests
+namespace KooliProjekt.UnitTests.DataTests
 {
-    internal class OtherServiceTests
+    internal class ApplicationDbContextTests
     {
     }
 }

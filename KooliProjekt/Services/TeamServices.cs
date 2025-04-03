@@ -3,6 +3,7 @@ using KooliProjekt.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
@@ -22,10 +23,7 @@ namespace KooliProjekt.Services
 
             var query = _context.Teams.OrderBy(t => t.Id).AsNoTracking();
 
-            var totalCount = await query.CountAsync();
-            var items = await GetPagedItems(query, page, pageSize);
-
-            return CreatePagedResult(items, totalCount, page, pageSize);
+            return await query.ToPagedResult(page, pageSize);
         }
 
         public async Task<Team> GetById(int id)
@@ -80,17 +78,6 @@ namespace KooliProjekt.Services
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-        }
-
-        private PagedResult<Team> CreatePagedResult(List<Team> items, int totalCount, int page, int pageSize)
-        {
-            return new PagedResult<Team>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
-            };
         }
 
         private void ValidatePaginationParameters(int page, int pageSize)

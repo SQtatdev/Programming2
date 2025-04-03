@@ -53,20 +53,11 @@ namespace KooliProjekt.Services
             }
 
             // Пагинация
-            var totalCount = await query.CountAsync();
             var items = await query
                 .OrderBy(m => m.Date) // Исправлено: было m.startDate
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                .ToPagedResult(page, pageSize);
 
-            return new PagedResult<Match>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize,
-            };
+            return items;
         }
 
         public async Task<PagedResult<Match>> List(int page, int pageSize)
@@ -79,18 +70,9 @@ namespace KooliProjekt.Services
 
             var totalCount = await query.CountAsync();
             var items = await query
-                .OrderBy(m => m.Date) // Исправлено: было m.GameStart
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return new PagedResult<Match>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize,
-            };
+                .OrderBy(m => m.Date) // Исправлено: было m.GameStart                
+                .ToPagedResult(page, pageSize);
+            return items;
         }
 
         public async Task<Match> GetById(int id)
