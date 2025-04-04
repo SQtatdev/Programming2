@@ -15,8 +15,8 @@ namespace KooliProjekt.UnitTests.ModelTests
             {
                 Id = 1,
                 Date = DateOnly.FromDateTime(DateTime.Now),
-                FirstTeam = "Home Matches",
-                SecondTeam = "Away Matches",
+                FirstTeam = new Team { TeamName = "Home Matches" },
+                SecondTeam = new Team { TeamName = "Away Matches" },
                 Score = "2-1",
                 IsCompleted = false
             };

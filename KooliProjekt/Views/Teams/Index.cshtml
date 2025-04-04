@@ -1,4 +1,5 @@
-﻿@model KooliProjekt.Models.MatchesIndexModel
+﻿
+@model KooliProjekt.Models.MatchesIndexModel
 
 @{
     ViewData["Title"] = "Team List";
@@ -13,7 +14,7 @@
         </a>
     </div>
 
-    @if (Model?.Items?.Any() == true)
+    @if (Model?.Matches?.Results?.Any() == true)
     {
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -27,14 +28,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach (var team in Model.Items)
+                            @foreach (var team in Model.Matches.Items)
                             {
                                         <tr>
                                             <td class="align-middle">
-                                                <strong>@team.TeamName</strong>
+                                                <strong>@team.Players</strong>
                                             </td>
                                             <td class="align-middle">
-                                        @* Исправлено TeamPlayers на Players *@
                                         @if (team.Players?.Any() == true)
                                         {
                                                         <div class="d-flex flex-wrap gap-2">
@@ -80,9 +80,9 @@
 
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <div class="text-muted">
-                            Showing @Model.Items.Count of @Model.TotalCount teams
+                            Showing @Model.Matches.Items.Count of @Model.Matches.TotalCount teams
                         </div>
-                    @await Component.InvokeAsync("Pager", Model)
+                    @await Component.InvokeAsync("Pager", Model.Matches)
                     </div>
                 </div>
             </div>

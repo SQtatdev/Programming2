@@ -10,22 +10,20 @@
     <a asp-action="Create" class="btn btn-primary">Create New Ranking</a>
 </p>
 
-@if (Model?.Items?.Any() == true)
+@if (Model?.Matches?.Results?.Any() == true)
 {
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>User</th>
                     <th>Total Points</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.Items)
+            @foreach (var item in Model.Matches.Results)
             {
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.User.Email)</td>
-                            <td>@Html.DisplayFor(modelItem => item.TotalPoints)</td>
+                    <td>@Html.DisplayFor(modelItem => item.winner)</td>
                             <td>
                                 <div class="btn-group">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
@@ -43,7 +41,7 @@
         </table>
 
         <div class="pagination-info">
-            Showing @Model.Items.Count of @Model.RowCount entries
+            Showing @Model.Matches.Items.Count of @Model.Matches.RowCount entries
         </div>
 }
 else
@@ -53,4 +51,4 @@ else
         </div>
 }
 
-@(await Component.InvokeAsync<PagerViewComponent>(Model))
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Matches))

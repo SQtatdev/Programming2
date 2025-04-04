@@ -46,14 +46,7 @@ namespace KooliProjekt.Controllers
                 var result = await _matchService.List(page, pageSize, search);
 
                 // Возвращение результата
-                return Ok(new
-                {
-                    Data = result.Items,
-                    result.TotalCount,
-                    result.Page,
-                    result.PageSize,
-                    result.PageCount
-                });
+                return Ok(result);
             }
             catch (Exception ex)
             {

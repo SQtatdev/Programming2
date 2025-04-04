@@ -14,22 +14,21 @@
     <thead>
         <tr>
             <th>Match ID</th>
-            <th>User ID</th>
-            <th>Predicted Score (First Team)</th>
-            <th>Predicted Score (Second Team)</th>
-            <th>Points</th>
-            <th>Actions</th>
+            <th>First Team</th>
+            <th>Second Team</th>
+            <th>Start</th>
+            <th>End</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Items) 
-    {
+        @foreach (var item in Model.Matches.Results)
+        {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.MatchId)</td>
-            <td>@Html.DisplayFor(modelItem => item.UserId)</td>
-            <td>@Html.DisplayFor(modelItem => item.PredictedScoreFirstTeam)</td>
-            <td>@Html.DisplayFor(modelItem => item.PredictedScoreSecondTeam)</td>
-            <td>@Html.DisplayFor(modelItem => item.Punktid)</td>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.FirstTeam.TeamName)</td>
+            <td>@Html.DisplayFor(modelItem => item.SecondTeam.TeamName)</td>
+            <td>@Html.DisplayFor(modelItem => item.GameStart)</td>
+            <td>@Html.DisplayFor(modelItem => item.GameEnd)</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -41,4 +40,4 @@
     </tbody>
 </table>
 
-@(await Component.InvokeAsync<PagerViewComponent>(Model)) 
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Matches)) 

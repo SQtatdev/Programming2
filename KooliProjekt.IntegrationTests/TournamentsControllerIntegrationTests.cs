@@ -7,37 +7,26 @@ using Microsoft.Extensions.DependencyInjection;
 using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
+using KooliProjekt.IntegrationTests.Helpers;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace KooliProjekt.IntegrationTests
 {
-    public class TournamentsControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+    public class TournamentsControllerIntegrationTests : TestBase
     {
-        private readonly WebApplicationFactory<Program> _factory;
         private readonly ApplicationDbContext _context;
 
         public TournamentsControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            _factory = factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("TournamentIntegrationDb");
-                    });
-
-                    var sp = services.BuildServiceProvider();
-                    _context = sp.GetRequiredService<ApplicationDbContext>();
-                    _context.Database.EnsureCreated();
-                });
-            });
+            _context = Factory.Services.GetRequiredService<ApplicationDbContext>();
         }
 
         [Fact]
         public async Task Create_ValidTournament_RedirectsToIndex()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
             var formData = new Dictionary<string, string>
             {
                 { "Name", "New Tournament" },

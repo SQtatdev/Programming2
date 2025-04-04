@@ -12,12 +12,12 @@ namespace KooliProjekt.UnitTests.ControllerTests
     public class RankingControllerTests
     {
         private readonly Mock<IRankingService> _mockService;
-        private readonly RankingControllerTests _controller;
+        private readonly RankingsController _controller;
 
         public RankingControllerTests()
         {
             _mockService = new Mock<IRankingService>();
-            _controller = new RankingController(_mockService.Object);
+            _controller = new RankingsController(_mockService.Object);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
             var rankings = new List<Models.Ranking>
             {
-                new Models.Ranking { Id = 1, UserId = "user1", Points = 100 }
+                new Models.Ranking { Id = 1, UserId = "user1", TotalPoints = 100 }
             };
             _mockService.Setup(x => x.GetAllRankings()).ReturnsAsync(rankings);
 

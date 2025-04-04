@@ -6,32 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Net.Http;
+using KooliProjekt.IntegrationTests.Helpers;
 
 namespace KooliProjekt.IntegrationTests
 {
-    public class TeamsControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class TeamsControllerIntegrationTests : TestBase
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
         public TeamsControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            _factory = factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("TeamsTestDb");
-                    });
-                });
-            });
         }
 
         [Fact]
         public async Task Create_Team_RedirectsToIndex()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
             var formData = new Dictionary<string, string>
             {
                 { "Name", "New Team" },

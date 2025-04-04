@@ -2,10 +2,6 @@
 
 namespace KooliProjekt.Models
 {
-    public class ApplicationDbContext : DbContext
-    {
-        public DbSet<Prediction> Predictions { get; set; }
-    }
     public class Prediction
     {
         public int Id { get; set; }

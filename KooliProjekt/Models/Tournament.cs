@@ -1,30 +1,36 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace KooliProjekt.Models
 {
     public class Tournament
     {
-        public required int Id { get; set; }
-        public required string Name { get; set; }
-        public required DateTime TournamentStart { get; set; }
-        public required DateTime TournamentEnd { get; set; }
-        public required int TournamentPart { get; set; }
-        public required string TournamentInfo { get; set; }
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public DateTime TournamentStart { get; set; }
+        [Required]
+        public DateTime TournamentEnd { get; set; }
+        [Required]
+        public int TournamentPart { get; set; }
+        [Required]
+        public string TournamentInfo { get; set; }
 
 
-        public required List<Match> Matches
+        public List<Match> Matches
         {
             get; set;
         }
-        public required IList<Ranking> rankings { get; set; }
+        public IList<Ranking> rankings { get; set; }
 
         public Tournament()
         {
             Matches = new List<Match>();
             rankings = new List<Ranking>();
         }
-
 
     }
 }

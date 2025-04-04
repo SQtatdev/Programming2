@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using KooliProjekt.Models;
-using Match = KooliProjekt.Models.Match; // Разрешение конфликта имен
+using Match = KooliProjekt.Models.Match;
 
-// Удален using для Search, если такого пространства имен нет
 
 namespace KooliProjekt.UnitTests.ControllerTests
 {
@@ -29,30 +28,27 @@ namespace KooliProjekt.UnitTests.ControllerTests
         [Fact]
         public async Task Index_ReturnsViewResultWithMatches()
         {
-            // Arrange
+
             int page = 1;
             var data = new List<Match>
             {
-                new Match { Id = 1 /* другие свойства */ },
-                new Match { Id = 2 /* другие свойства */ }
+                new Match { Id = 1 },
+                new Match { Id = 2 }
             };
 
             var pagedResult = new PagedResult<Match>
             {
-                Items = data // или Results, в зависимости от реализации
+                Results = data
             };
 
-            // Если MatchSearch не существует, замените на null или создайте stub-класс
             _mockService.Setup(x => x.List(
-                It.IsAny<int>(),  // page
-                It.IsAny<int>(),  // pageSize
-                null  // или создайте mock для MatchSearch, если он нужен
+                It.IsAny<int>(), 
+                It.IsAny<int>(), 
+                null 
             )).ReturnsAsync(pagedResult);
 
-            // Act
             var result = await _controller.Index(page);
 
-            // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal(pagedResult, viewResult.Model);
         }

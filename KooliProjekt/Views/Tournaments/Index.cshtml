@@ -13,7 +13,7 @@
         </a>
     </p>
 
-    @if (Model?.Items?.Any() == true)
+    @if (Model?.Matches?.Results?.Any() == true)
     {
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -28,15 +28,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach (var item in Model.Items)
+                    @foreach (var item in Model.Matches.Results)
                     {
                                 <tr>
-                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                    <td>@item.TournamentStart.ToString("yyyy-MM-dd")</td>
-                                    <td>@item.TournamentEnd.ToString("yyyy-MM-dd")</td>
-                                    <td>@Html.DisplayFor(modelItem => item.TournamentPart)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Tournament)</td>
+                                    <td>@item..ToString("yyyy-MM-dd")</td>
+                                    <td>@item.Tournament.TournamentEnd.ToString("yyyy-MM-dd")</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Tournament.TournamentPart)</td>
                                     <td class="text-truncate" style="max-width: 200px;">
-                                @item.TournamentInfo
+                                @item.Tournament.TournamentInfo
                                     </td>
                                     <td>
                                         <div class="btn-group">

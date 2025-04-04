@@ -14,7 +14,7 @@ namespace KooliProjekt.UnitTests.ModelTests
             var prediction = new Prediction
             {
                 MatchId = 1,
-                UserId = "user1",
+                UserId = 1,
                 PredictedResult = "2-1"
             };
             var context = new ValidationContext(prediction);

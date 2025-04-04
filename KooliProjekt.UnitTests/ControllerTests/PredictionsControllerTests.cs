@@ -28,7 +28,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
             var predictions = new List<Prediction>
             {
-                new Prediction { Id = 1, UserId = "user1" }
+                new Prediction { Id = 1, UserId = 1 }
             };
             _mockService.Setup(x => x.List(It.IsAny<int>()))
                        .ReturnsAsync(new PagedResult<Prediction> { Results = predictions });
@@ -58,7 +58,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task Create_ReturnsRedirectToIndex_WhenModelValid()
         {
             // Arrange
-            var validPrediction = new Prediction { MatchId = 1, PredictedResult = "2-1" };
+            var validPrediction = new Prediction { MatchId = 1, PredictedScoreFirstTeam = 2-1 };
+            var validPrediction2 = new Prediction { MatchId = 1, PredictedScoreSecondTeam = 1-2 };
 
             // Act
             var result = await _controller.Create(validPrediction);

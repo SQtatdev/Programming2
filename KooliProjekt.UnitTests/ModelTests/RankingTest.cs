@@ -14,8 +14,7 @@ namespace KooliProjekt.UnitTests.ModelTests
             var ranking = new Ranking
             {
                 UserId = "user1",
-                Points = 100,
-                LastUpdated = DateTime.Now
+                TotalPoints = 100,
             };
             var context = new ValidationContext(ranking);
             var results = new List<ValidationResult>();
@@ -31,7 +30,7 @@ namespace KooliProjekt.UnitTests.ModelTests
         public void Ranking_NegativePoints_FailsValidation()
         {
             // Arrange
-            var ranking = new Ranking { Points = -1 };
+            var ranking = new Ranking { TotalPoints = -1 };
 
             // Act & Assert
             Assert.Throws<ValidationException>(() => ranking.ValidatePoints());
