@@ -17,8 +17,6 @@ namespace KooliProjekt.UnitTests.ModelTests
                 Date = DateOnly.FromDateTime(DateTime.Now),
                 FirstTeam = new Team { TeamName = "Home Matches" },
                 SecondTeam = new Team { TeamName = "Away Matches" },
-                Score = "2-1",
-                IsCompleted = false
             };
 
             var context = new ValidationContext(match);

@@ -86,7 +86,15 @@ namespace KooliProjekt.Services
 
         public async Task Save(Match match)
         {
-            _context.Matches.Add(match);
+            if (match.Id == 0)
+            {
+                _context.Matches.Add(match);
+            }
+            else
+            {
+                _context.Matches.Update(match);
+            }
+            
             await _context.SaveChangesAsync();
         }
 

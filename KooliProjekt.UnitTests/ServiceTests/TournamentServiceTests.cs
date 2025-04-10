@@ -4,6 +4,7 @@ using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using KooliProjekt.Models;
+using Moq;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -55,7 +56,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             using (var context = new ApplicationDbContext(options))
             {
                 var service = new TournamentService(context);
-                var result = await service.List(1);
+                var result = await service.List(It.IsAny<int>(), It.IsAny<int>());
                 Assert.Equal(2, result.Results.Count);
             }
         }

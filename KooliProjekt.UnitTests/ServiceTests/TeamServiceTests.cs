@@ -21,7 +21,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         {
             // Arrange
             var options = CreateContextOptions();
-            var newTeam = new Team { Name = "Test Team" };
+            var newTeam = new Team { TeamName = "Test Team" };
 
             // Act
             using (var context = new ApplicationDbContext(options))
@@ -34,7 +34,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             using (var context = new ApplicationDbContext(options))
             {
                 Assert.Equal(1, await context.Teams.CountAsync());
-                Assert.Equal("Test Team", (await context.Teams.FirstAsync()).Name);
+                Assert.Equal("Test Team", (await context.Teams.FirstAsync()).TeamName);
             }
         }
     }

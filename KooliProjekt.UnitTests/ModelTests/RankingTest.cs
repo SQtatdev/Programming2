@@ -33,7 +33,7 @@ namespace KooliProjekt.UnitTests.ModelTests
             var ranking = new Ranking { TotalPoints = -1 };
 
             // Act & Assert
-            Assert.Throws<ValidationException>(() => ranking.ValidatePoints());
+            Assert.Throws<ValidationException>(() => ranking.TotalPoints());
         }
     }
 }

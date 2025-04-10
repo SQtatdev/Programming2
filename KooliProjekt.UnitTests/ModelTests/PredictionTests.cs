@@ -15,7 +15,8 @@ namespace KooliProjekt.UnitTests.ModelTests
             {
                 MatchId = 1,
                 UserId = 1,
-                PredictedResult = "2-1"
+                PredictedScoreFirstTeam = 1,
+                PredictedScoreSecondTeam = 2,
             };
             var context = new ValidationContext(prediction);
             var results = new List<ValidationResult>();
@@ -34,8 +35,9 @@ namespace KooliProjekt.UnitTests.ModelTests
             var prediction = new Prediction
             {
                 MatchId = 1,
-                UserId = "user1",
-                PredictedResult = "invalid-score-format" // Неправильный формат
+                UserId = 3,
+                PredictedScoreFirstTeam = 2,
+                PredictedScoreSecondTeam =1,
             };
             var context = new ValidationContext(prediction);
             var results = new List<ValidationResult>();

@@ -29,7 +29,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
                 var service = new MatchService(context);
 
                 // Act
-                var result = await service.List(1);
+                var result = await service.List(It.IsAny<int>(), It.IsAny<int>());
 
                 // Assert
                 Assert.Equal(2, result.Results.Count);

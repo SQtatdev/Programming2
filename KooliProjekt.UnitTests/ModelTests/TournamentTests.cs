@@ -15,8 +15,8 @@ namespace KooliProjekt.UnitTests.ModelTests
             var tournament = new Tournament
             {
                 Name = "Valid Tournament",
-                StartDate = DateTime.Now.AddDays(1),
-                EndDate = DateTime.Now.AddDays(10)
+                TournamentStart = DateTime.Now.AddDays(1),
+                TournamentEnd = DateTime.Now.AddDays(10)
             };
             var context = new ValidationContext(tournament);
             var results = new List<ValidationResult>();
@@ -35,8 +35,8 @@ namespace KooliProjekt.UnitTests.ModelTests
             var tournament = new Tournament
             {
                 Name = "Invalid Tournament",
-                StartDate = DateTime.Now.AddDays(10),
-                EndDate = DateTime.Now
+                TournamentStart = DateTime.Now.AddDays(10),
+                TournamentEnd = DateTime.Now
             };
 
             // Act & Assert

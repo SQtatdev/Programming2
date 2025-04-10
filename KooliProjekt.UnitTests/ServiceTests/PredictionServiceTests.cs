@@ -23,7 +23,8 @@ namespace KooliProjekt.UnitTests.ServiceTests
         {
             // Arrange
             var options = CreateNewContextOptions();
-            var newPrediction = new Prediction { MatchId = 1, PredictedResult = "1-0" };
+            var newPrediction = new Prediction { MatchId = 1, PredictedScoreFirstTeam = 1, PredictedScoreSecondTeam = 2 };
+            var PredictedResult = Prediction.PredictedScoreFirstTeam + "," + Prediction.PredictedScoreSecondTeam;
 
             // Act
             using (var context = new ApplicationDbContext(options))

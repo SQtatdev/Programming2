@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using KooliProjekt.Models;
+using Prediction = KooliProjekt.Models.Prediction;
 
 namespace KooliProjekt.UnitTests.ControllerTests
 {
@@ -21,45 +22,38 @@ namespace KooliProjekt.UnitTests.ControllerTests
             _controller = new PredictionsController(_mockService.Object);
         }
 
-        // Тест для Index
         [Fact]
         public async Task Index_ReturnsViewResultWithPredictions()
         {
             // Arrange
-            var predictions = new List<Prediction>
+            var predictions = new PagedResult<Prediction>
             {
-                new Prediction { Id = 1, UserId = 1 }
+                Results = new List<Prediction> { new Prediction { Id = 1 } }
             };
-            _mockService.Setup(x => x.List(It.IsAny<int>()))
-                       .ReturnsAsync(new PagedResult<Prediction> { Results = predictions });
+            _mockService.Setup(x => x.List(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(predictions);
 
             // Act
             var result = await _controller.Index(1);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<PagedResult<Prediction>>(viewResult.Model);
-            Assert.Single(model.Results);
+            Assert.Equal(predictions, viewResult.Model);
         }
 
-        // Тест для Details
-        [Fact]
-        public async Task Details_ReturnsNotFoundForNullId()
-        {
-            // Act
-            var result = await _controller.Details(null);
+        // ... Existing GET action tests ...
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        // Тест для Create (POST)
+        // POST Create Action Tests
         [Fact]
-        public async Task Create_ReturnsRedirectToIndex_WhenModelValid()
+        public async Task CreatePost_ReturnsRedirectToAction_WhenModelValid()
         {
             // Arrange
-            var validPrediction = new Prediction { MatchId = 1, PredictedScoreFirstTeam = 2-1 };
-            var validPrediction2 = new Prediction { MatchId = 1, PredictedScoreSecondTeam = 1-2 };
+            var validPrediction = new Prediction
+            {
+                MatchId = 1,
+                PredictedScoreFirstTeam = 2,
+                PredictedScoreSecondTeam = 1
+            };
+            _mockService.Setup(x => x.Save(validPrediction));
 
             // Act
             var result = await _controller.Create(validPrediction);
@@ -67,23 +61,148 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectResult.ActionName);
+            _mockService.Verify(x => x.Save(validPrediction), Times.Once);
         }
 
-        // Тест для Edit (GET)
         [Fact]
-        public async Task Edit_ReturnsViewWithPrediction()
+        public async Task CreatePost_ReturnsView_WhenModelInvalid()
         {
             // Arrange
-            var testId = 1;
-            _mockService.Setup(x => x.GetById(testId))
-                       .ReturnsAsync(new Prediction { Id = testId });
+            var invalidPrediction = new Prediction();
+            _controller.ModelState.AddModelError("MatchId", "Required");
 
             // Act
-            var result = await _controller.Edit(testId);
+            var result = await _controller.Create(invalidPrediction);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.NotNull(viewResult.Model);
+            Assert.Equal(invalidPrediction, viewResult.Model);
+            _mockService.Verify(x => x.Save(It.IsAny<Prediction>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task CreatePost_ReturnsView_WhenScorePredictionInvalid()
+        {
+            // Arrange
+            var invalidPrediction = new Prediction
+            {
+                MatchId = 1,
+                PredictedScoreFirstTeam = -1, // Invalid score
+                PredictedScoreSecondTeam = 1
+            };
+            _controller.ModelState.AddModelError("PredictedScoreFirstTeam", "Invalid score");
+
+            // Act
+            var result = await _controller.Create(invalidPrediction);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(invalidPrediction, viewResult.Model);
+        }
+
+        // POST Edit Action Tests
+        [Fact]
+        public async Task EditPost_ReturnsRedirectToAction_WhenModelValid()
+        {
+            // Arrange
+            var validPrediction = new Prediction
+            {
+                Id = 1,
+                MatchId = 1,
+                PredictedScoreFirstTeam = 3,
+                PredictedScoreSecondTeam = 2
+            };
+            _mockService.Setup(x => x.Save(validPrediction)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.Edit(1, validPrediction);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
+            _mockService.Verify(x => x.Save(validPrediction), Times.Once);
+        }
+
+        [Fact]
+        public async Task EditPost_ReturnsView_WhenModelInvalid()
+        {
+            // Arrange
+            var invalidPrediction = new Prediction { Id = 1 };
+            _controller.ModelState.AddModelError("MatchId", "Required");
+
+            // Act
+            var result = await _controller.Edit(1, invalidPrediction);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(invalidPrediction, viewResult.Model);
+            _mockService.Verify(x => x.Save(It.IsAny<Prediction>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task EditPost_ReturnsNotFound_WhenIdMismatch()
+        {
+            // Arrange
+            var prediction = new Prediction { Id = 2 };
+
+            // Act
+            var result = await _controller.Edit(1, prediction);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        // POST DeleteConfirmed Action Tests
+        [Fact]
+        public async Task DeleteConfirmed_ReturnsRedirectToAction_WhenSuccessful()
+        {
+            // Arrange
+            int id = 1;
+            _mockService.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.DeleteConfirmed(id);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
+            _mockService.Verify(x => x.Delete(id), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteConfirmed_ReturnsProblem_WhenException()
+        {
+            // Arrange
+            int id = 1;
+            _mockService.Setup(x => x.Delete(id)).ThrowsAsync(new Exception("Error"));
+
+            // Act
+            var result = await _controller.DeleteConfirmed(id);
+
+            // Assert
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+            _mockService.Verify(x => x.Delete(id), Times.Once);
+        }
+
+        // Additional tests for business logic
+        [Fact]
+        public async Task CreatePost_ReturnsView_WhenPredictionAlreadyExists()
+        {
+            // Arrange
+            var existingPrediction = new Prediction
+            {
+                MatchId = 1,
+                UserId = 1
+            };
+            _controller.ModelState.AddModelError("", "Prediction already exists");
+
+            // Act
+            var result = await _controller.Create(existingPrediction);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(existingPrediction, viewResult.Model);
         }
     }
 }

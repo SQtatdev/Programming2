@@ -11,7 +11,7 @@ namespace KooliProjekt.UnitTests.ModelTests
         public void Team_NameRequired_ValidationFailsWhenEmpty()
         {
             // Arrange
-            var team = new Team { Name = "" };
+            var team = new Team { TeamName = "" };
             var context = new ValidationContext(team);
             var results = new List<ValidationResult>();
 

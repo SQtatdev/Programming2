@@ -24,10 +24,10 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var options = CreateContextOptions();
             using (var context = new ApplicationDbContext(options))
             {
-                context.Users.Add(new User { Id = "user1" });
+                context.Users.Add(new User { Name = "Alfred" });
                 context.Predictions.AddRange(
-                    new Prediction { UserId = "user1", PointsEarned = 10 },
-                    new Prediction { UserId = "user1", PointsEarned = 20 });
+                    new Prediction { UserId = 4, Punktid = 10 },
+                    new Prediction { UserId = 2, Punktid = 20 });
                 await context.SaveChangesAsync();
             }
 
@@ -42,7 +42,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             using (var context = new ApplicationDbContext(options))
             {
                 var ranking = await context.Rankings.FirstAsync();
-                Assert.Equal(30, ranking.Points);
+                Assert.Equal(30, ranking.TotalPoints);
             }
         }
 
@@ -54,9 +54,9 @@ namespace KooliProjekt.UnitTests.ServiceTests
             using (var context = new ApplicationDbContext(options))
             {
                 context.Rankings.AddRange(
-                    new Ranking { Points = 100 },
-                    new Ranking { Points = 200 },
-                    new Ranking { Points = 50 });
+                    new Ranking { TotalPoints = 100 },
+                    new Ranking { TotalPoints = 200 },
+                    new Ranking { TotalPoints = 50 });
                 await context.SaveChangesAsync();
             }
 
