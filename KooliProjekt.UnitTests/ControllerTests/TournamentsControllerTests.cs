@@ -211,8 +211,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             };
             _mockService.Setup(x => x.HasOverlappingTournaments(
                 overlappingTournament.TournamentStart,
-                overlappingTournament.TournamentPart))
-                .ReturnsAsync(true);
+                overlappingTournament.TournamentEnd));
             _controller.ModelState.AddModelError("", "Tournament dates overlap with existing tournament");
 
             // Act

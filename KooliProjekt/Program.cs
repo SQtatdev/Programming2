@@ -31,7 +31,7 @@ namespace KooliProjekt
             // 3. Регистрация сервисов приложения
             builder.Services.AddScoped<IMatchService, MatchService>();
             builder.Services.AddScoped<IPredictionService, PredictionService>();
-            builder.Services.AddScoped<IRankingService, RankingServices>();
+            builder.Services.AddScoped<IRankingServices, RankingServices>();
             builder.Services.AddScoped<ITeamService, TeamService>();
             builder.Services.AddScoped<ITournamentService, TournamentService>();
 

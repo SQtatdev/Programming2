@@ -69,5 +69,10 @@ namespace KooliProjekt.Services
         {
             return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
+
+        public void HasOverlappingTournaments(DateTime TournamentStart, DateTime TournamentEnd)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

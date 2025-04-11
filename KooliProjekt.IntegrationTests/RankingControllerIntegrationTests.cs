@@ -23,7 +23,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Index_ReturnsRankingsFromDatabase()
         {
             // Arrange
-            _context.Rankings.Add(new Ranking { UserId = "user1", TotalPoints = 150 });
+            _context.Rankings.Add(new Ranking { UserId = 15, TotalPoints = 150 });
             await _context.SaveChangesAsync();
 
             var client = Factory.CreateClient();

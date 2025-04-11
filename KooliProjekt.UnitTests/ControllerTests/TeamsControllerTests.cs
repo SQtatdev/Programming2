@@ -27,7 +27,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
             var teams = new PagedResult<Team>
             {
-                Results = new List<Team> { new Team { Id = 1 } }
+                Results = new List<Team> { new Team { Id = 1, TeamName = "X" } }
             };
             _mockService.Setup(x => x.List(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(teams);
 
@@ -187,8 +187,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task CreatePost_ReturnsView_WhenTeamAlreadyExists()
         {
             // Arrange
-            var existingTeam = new Team { TeamName = "Existing Team" };
-            _mockService.Setup(x => x.TeamExists(existingTeam.TeamName))
+            var existingTeam = new Team { Id = 1, TeamName = "X" };
+            _mockService.Setup(x => x.Exists(existingTeam.Id))
                        .ReturnsAsync(true);
             _controller.ModelState.AddModelError("", "Team already exists");
 

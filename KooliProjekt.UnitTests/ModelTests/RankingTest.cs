@@ -13,7 +13,7 @@ namespace KooliProjekt.UnitTests.ModelTests
             // Arrange
             var ranking = new Ranking
             {
-                UserId = "user1",
+                UserId = 14,
                 TotalPoints = 100,
             };
             var context = new ValidationContext(ranking);
@@ -33,7 +33,7 @@ namespace KooliProjekt.UnitTests.ModelTests
             var ranking = new Ranking { TotalPoints = -1 };
 
             // Act & Assert
-            Assert.Throws<ValidationException>(() => ranking.TotalPoints());
+            Assert.Throws<ValidationException>(() => ranking.TotalPoints);
         }
     }
 }

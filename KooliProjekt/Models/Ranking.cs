@@ -8,7 +8,7 @@ namespace KooliProjekt.Models
     {
         public int Id { get; set; }
         [Required]
-        public string UserId { get; set; }
+        public int  UserId { get; set; }
         public int TournamentID { get; set; }
         public int TotalPoints { get; set; }
 

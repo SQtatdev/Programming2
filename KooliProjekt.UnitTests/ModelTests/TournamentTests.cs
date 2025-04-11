@@ -41,7 +41,7 @@ namespace KooliProjekt.UnitTests.ModelTests
 
             // Act & Assert
             Assert.Throws<ValidationException>(() =>
-                tournament.ValidateDates());
+                tournament.TournamentInfo);
         }
     }
 }

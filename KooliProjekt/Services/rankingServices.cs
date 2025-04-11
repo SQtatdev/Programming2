@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class RankingServices : IRankingService
+    public class RankingServices : IRankingServices
     {
         private readonly Data.ApplicationDbContext _context;
 
@@ -52,6 +52,11 @@ namespace KooliProjekt.Services
         public async Task<bool> Exists(int id)
         {
             return await _context.Rankings.AnyAsync(r => r.Id == id);
+        }
+
+        public async Task UpdateAllRankings()
+        {
+            
         }
     }
 }

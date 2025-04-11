@@ -12,12 +12,12 @@ namespace KooliProjekt.UnitTests.ControllerTests
 {
     public class RankingControllerTests
     {
-        private readonly Mock<IRankingService> _mockService;
+        private readonly Mock<IRankingServices> _mockService;
         private readonly RankingsController _controller;
 
         public RankingControllerTests()
         {
-            _mockService = new Mock<IRankingService>();
+            _mockService = new Mock<IRankingServices>();
             _controller = new RankingsController(_mockService.Object);
         }
 
@@ -27,7 +27,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
             var rankings = new List<Ranking>
             {
-                new Ranking { Id = 1, UserId = "user1", TotalPoints = 100 }
+                new Ranking { Id = 1, UserId = 8, TotalPoints = 100 }
             };
             var pagedResult = new PagedResult<Ranking>();
             pagedResult.Results = rankings;
@@ -46,7 +46,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task UpdateRankings_CallsServiceMethod()
         {
             // Arrange
-            _mockService.Setup(x => x.UpdateAllRankings()).Returns(Task.CompletedTask);
+            _mockService.Setup(x => x.UpdateAllRankings());
 
             // Act
             await _controller.UpdateRankings();
@@ -62,7 +62,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task CreatePost_ReturnsRedirectToAction_WhenModelValid()
         {
             // Arrange
-            var validRanking = new Ranking { UserId = "user1", TotalPoints = 100 };
+            var validRanking = new Ranking { UserId = 10, TotalPoints = 100 };
             _mockService.Setup(x => x.Save(validRanking));
 
             // Act
@@ -94,7 +94,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task CreatePost_ReturnsView_WhenPointsInvalid()
         {
             // Arrange
-            var invalidRanking = new Ranking { UserId = "user1", TotalPoints = -10 };
+            var invalidRanking = new Ranking { UserId = 11, TotalPoints = -10 };
             _controller.ModelState.AddModelError("TotalPoints", "Points cannot be negative");
 
             // Act
@@ -110,7 +110,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task EditPost_ReturnsRedirectToAction_WhenModelValid()
         {
             // Arrange
-            var validRanking = new Ranking { Id = 1, UserId = "user1", TotalPoints = 150 };
+            var validRanking = new Ranking { Id = 1, UserId = 12, TotalPoints = 150 };
             _mockService.Setup(x => x.Save(validRanking)).Returns(Task.CompletedTask);
 
             // Act
@@ -189,8 +189,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task CreatePost_ReturnsView_WhenUserAlreadyRanked()
         {
             // Arrange
-            var existingRanking = new Ranking { UserId = "user1" };
-            _mockService.Setup(x => x.UserExists(existingRanking.UserId))
+            var existingRanking = new Ranking { UserId = 9 };
+            _mockService.Setup(x => x.Exists(existingRanking.UserId))
                        .ReturnsAsync(true);
             _controller.ModelState.AddModelError("", "User already has ranking");
 

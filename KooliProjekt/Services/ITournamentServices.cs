@@ -22,5 +22,6 @@ namespace KooliProjekt.Services
 
         // Проверка существования турнира
         Task<bool> Exists(int id);
+        void HasOverlappingTournaments(DateTime TournamentStart, DateTime TournamentEnd);
     }
 }

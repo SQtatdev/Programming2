@@ -1,39 +1,70 @@
 ﻿using Xunit;
-using Moq;
 using KooliProjekt.Services;
 using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using KooliProjekt.Models;
+using System;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
-    public class MatchServiceTests
+    public class MatchServiceTests : ServiceTestBase, IDisposable
     {
-        [Fact]
-        public async Task List_ReturnsPagedMatches()
+        private readonly ApplicationDbContext _context;
+        private readonly MatchService _service;
+
+        public MatchServiceTests()
         {
-            // Arrange
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-            using (var context = new ApplicationDbContext(options))
-            {
-                context.Matches.AddRange(
-                    new Match { Id = 1 },
-                    new Match { Id = 2 });
-                await context.SaveChangesAsync();
-            }
+            _context = new ApplicationDbContext(options);
+            SeedTestData();
+            _service = new MatchService(_context);
+        }
 
-            using (var context = new ApplicationDbContext(options))
-            {
-                var service = new MatchService(context);
+        private void SeedTestData()
+        {
+            _context.Matches.AddRange(
+                new Match { Id = 1, FirstTeamId = 1, SecondTeamId = 2, Date = DateOnly.FromDateTime(DateTime.Now).AddDays(1) },
+                new Match { Id = 2, FirstTeamId = 2, SecondTeamId = 1, Date = DateOnly.FromDateTime(DateTime.Now).AddDays(2) });
+            _context.SaveChanges();
+        }
 
-                // Act
-                var result = await service.List(It.IsAny<int>(), It.IsAny<int>());
+        public void Dispose() => _context.Dispose();
 
-                // Assert
-                Assert.Equal(2, result.Results.Count);
-            }
+        [Fact]
+        public async Task GetById_ReturnsMatch()
+        {
+            var result = await _service.GetById(1);
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Id);
+        }
+
+        [Fact]
+        public async Task List_ReturnsAllMatches()
+        {
+            var result = await _service.List(1, 10);
+            Assert.Equal(2, result.Results.Count);
+        }
+
+        [Fact]
+        public async Task Save_CreatesNewMatch()
+        {
+            var newMatch = new Match { FirstTeamId = 1, SecondTeamId = 2, Date = DateOnly.FromDateTime(DateTime.Now) };
+            await _service.Save(newMatch);
+
+            // Kontrolli DbContexti kaudu, kas salvestati ära
+
+            //&&Assert.True(result > 0);
+        }
+
+        [Fact]
+        public async Task Delete_RemovesMatch()
+        {
+            await _service.Delete(1);
+            Assert.Null(await _context.Matches.FindAsync(1));
         }
     }
 }

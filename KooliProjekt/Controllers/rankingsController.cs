@@ -7,9 +7,9 @@ namespace KooliProjekt.Controllers
 {
     public class RankingsController : Controller
     {
-        private readonly IRankingService _rankingService;
+        private readonly IRankingServices _rankingService;
 
-        public RankingsController(IRankingService rankingService)
+        public RankingsController(IRankingServices rankingService)
         {
             _rankingService = rankingService;
         }
@@ -100,6 +100,11 @@ namespace KooliProjekt.Controllers
             // Удаляем рейтинг
             await _rankingService.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task UpdateRankings()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public interface IRankingService
+    public interface IRankingServices
     {
         Task<PagedResult<Ranking>> List(int page, int pageSize);
         Task<Ranking> GetById(int id);
@@ -11,5 +11,6 @@ namespace KooliProjekt.Services
         Task Edit(Ranking ranking);
         Task Delete(int id);
         Task<bool> Exists(int id);
+        Task UpdateAllRankings();
     }
 }
