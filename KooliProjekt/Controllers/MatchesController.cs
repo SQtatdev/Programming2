@@ -88,14 +88,19 @@ namespace KooliProjekt.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _matchService.Delete(id);
+            await _matchService.Delete(id);
 
-            if (!success)
+            return RedirectToAction(nameof(Index));
+
+            var item = await _matchService.GetById(id);
+            if(item == null)
             {
                 return NotFound();
             }
 
-            return NoContent();
+            await _matchService.Delete(id);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Prediction
     {
         public int Id { get; set; }

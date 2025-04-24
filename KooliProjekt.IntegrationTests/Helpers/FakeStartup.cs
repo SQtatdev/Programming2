@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using KooliProjekt.Controllers;
 using KooliProjekt.Data;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KooliProjekt.IntegrationTests.Helpers
 {
+    [ExcludeFromCodeCoverage]
     public class FakeStartup //: Startup
     {
         public FakeStartup(IConfiguration configuration)

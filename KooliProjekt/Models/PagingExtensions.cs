@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public static class PagingExtensions
     {
         public async static Task<PagedResult<T>> ToPagedResult<T>(this IQueryable<T> query, int page, int pageSize) where T : class

@@ -1,5 +1,8 @@
-﻿namespace KooliProjekt.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public class User
     {
         public int Id { get; set; }

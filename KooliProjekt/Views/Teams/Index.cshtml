@@ -32,16 +32,16 @@
                             {
                                         <tr>
                                             <td class="align-middle">
-                                                <strong>@team.Players</strong>
+                                        <strong>@team.FirstTeam</strong>
                                             </td>
                                             <td class="align-middle">
                                         @if (team.Players?.Any() == true)
                                         {
-                                                        <div class="d-flex flex-wrap gap-2">
+                                            <div class="d-flex flex-wrap gap-2">
                                                 @foreach (var player in team.Players)
                                                 {
                                                     <span class="badge bg-primary">
-                                                        @player.PlayerName 
+                                                        @player
                                                     </span>
                                                 }
                                                 }

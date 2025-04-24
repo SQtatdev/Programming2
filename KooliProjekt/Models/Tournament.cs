@@ -1,9 +1,11 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Tournament
     {
         public int Id { get; set; }

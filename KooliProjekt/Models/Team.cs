@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using KooliProjekt.Models;
 namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Team
     {
         public int Id { get; set; }

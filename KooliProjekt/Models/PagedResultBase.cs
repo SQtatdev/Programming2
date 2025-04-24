@@ -1,5 +1,8 @@
-﻿namespace KooliProjekt.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public abstract class PagedResultBase
     {
         public int CurrentPage { get; set; }

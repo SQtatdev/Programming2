@@ -3,9 +3,11 @@ using KooliProjekt.Models;
 using KooliProjekt.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt.Data
 {
+    [ExcludeFromCodeCoverage]
     public static class SeedData
     {
         public static async Task GenerateAsync(

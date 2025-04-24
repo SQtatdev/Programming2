@@ -1,6 +1,9 @@
 ﻿// Models/Player.cs
+using System.Diagnostics.CodeAnalysis;
+
 namespace KooliProjekt.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Player
     {
         public int Id { get; set; }
