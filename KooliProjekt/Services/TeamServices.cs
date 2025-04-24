@@ -10,9 +10,9 @@ namespace KooliProjekt.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public TeamService(Data.ApplicationDbContext context)
+        public TeamService(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -21,48 +21,83 @@ namespace KooliProjekt.Services
         {
             ValidatePaginationParameters(page, pageSize);
 
-            var query = _context.Teams.OrderBy(t => t.Id).AsNoTracking();
-
-            return await query.ToPagedResult(page, pageSize);
+            return await _context.Teams
+                .Include(t => t.HomeMatches)
+                .Include(t => t.AwayMatches)
+                .OrderBy(t => t.Id)
+                .AsNoTracking()
+                .ToPagedResult(page, pageSize);
         }
 
         public async Task<Team> GetById(int id)
         {
             return await _context.Teams
+                .Include(t => t.HomeMatches)
+                .Include(t => t.AwayMatches)
                 .FirstOrDefaultAsync(t => t.Id == id)
                 ?? throw new KeyNotFoundException($"Team with id {id} not found");
         }
 
-        public async Task Save(Team team)
+        public async Task<bool> Save(Team team)
         {
             ValidateTeam(team);
 
-            _context.Teams.Add(team);
-            await SaveChangesWithExceptionHandling();
+            try
+            {
+                _context.Teams.Add(team);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task Update(Team team)
+        public async Task<bool> Update(Team team)
         {
             ValidateTeam(team);
 
-            var existingTeam = await GetExistingTeam(team.Id);
-            _context.Entry(existingTeam).CurrentValues.SetValues(team);
-
-            await SaveChangesWithExceptionHandling();
+            try
+            {
+                var existingTeam = await GetExistingTeam(team.Id);
+                _context.Entry(existingTeam).CurrentValues.SetValues(team);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var team = await GetExistingTeam(id);
-
-            _context.Teams.Remove(team);
-            await SaveChangesWithExceptionHandling();
+            try
+            {
+                var team = await GetExistingTeam(id);
+                _context.Teams.Remove(team);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task Edit(Team team)
+        public async Task<bool> Edit(Team team)
         {
-            _context.Teams.Update(team);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Teams.Update(team);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> Exists(int id)
@@ -71,14 +106,6 @@ namespace KooliProjekt.Services
         }
 
         #region Helper Methods
-
-        private async Task<List<Team>> GetPagedItems(IQueryable<Team> query, int page, int pageSize)
-        {
-            return await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
 
         private void ValidatePaginationParameters(int page, int pageSize)
         {
@@ -99,18 +126,6 @@ namespace KooliProjekt.Services
         {
             return await _context.Teams.FindAsync(id)
                 ?? throw new KeyNotFoundException($"Team with id {id} not found");
-        }
-
-        private async Task SaveChangesWithExceptionHandling()
-        {
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new InvalidOperationException("Database operation failed", ex);
-            }
         }
 
         #endregion

@@ -7,9 +7,9 @@ namespace KooliProjekt.Services
     {
         Task<PagedResult<Ranking>> List(int page, int pageSize);
         Task<Ranking> GetById(int id);
-        Task Save(Ranking ranking);
-        Task Edit(Ranking ranking);
-        Task Delete(int id);
+        Task<bool> Save(Ranking ranking);
+        Task<bool> Edit(Ranking ranking);
+        Task<bool> Delete(int id);
         Task<bool> Exists(int id);
         Task UpdateAllRankings();
     }

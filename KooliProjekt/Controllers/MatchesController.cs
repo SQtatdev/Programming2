@@ -5,85 +5,68 @@ using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using ApplicationDbContext = KooliProjekt.Data.ApplicationDbContext;
 
 namespace KooliProjekt.Controllers
 {
-    public class MatchesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MatchesController : ControllerBase
     {
         private readonly IMatchService _matchService;
         private readonly ApplicationDbContext _context;
 
-        // Конструктор (без конфликта имен)
         public MatchesController(IMatchService matchService, ApplicationDbContext context)
         {
             _matchService = matchService;
             _context = context;
         }
 
-        // Метод Index с пагинацией и поиском
-        public async Task<IActionResult> Index(
-            int page = 1,
-            int pageSize = 10,
-            MatchSearch? search = null) // Указание nullable для параметра
+        // GET: api/Matches
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] MatchSearch? search = null)
         {
-            ViewBag.Tournaments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
-                await _context.Tournaments.ToListAsync(),
-                "Id",
-                "TournamentName"
-            );
+            var matches = await _matchService.List(page, pageSize, search);
+            return Ok(matches);
+        }
 
-            var model = new MatchesIndexModel
+        // GET api/Matches/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var match = await _matchService.GetById(id);
+
+            if (match == null)
             {
-                Matches = await _matchService.List(page, pageSize, search),
-                Search = search ?? new MatchSearch()
-            };
+                return NotFound();
+            }
 
-            return View(model);
+            return Ok(match);
         }
 
-        // Метод Details (обработка nullable ID)
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var match = await _matchService.GetById(id.Value);
-            return match == null ? NotFound() : View(match);
-        }
-
-        // Метод Create (GET)
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // Метод Create (POST)
+        // POST api/Matches
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
+        public async Task<IActionResult> Create([FromBody] Match match)
         {
-            if (!ModelState.IsValid) return View(match);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             await _matchService.Save(match);
-            return RedirectToAction(nameof(Index));
+            return CreatedAtAction(nameof(GetById), new { id = match.Id }, match);
         }
 
-        // Метод Edit (GET)
-        public async Task<IActionResult> Edit(int? id)
+        // PUT api/Matches/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Match match)
         {
-            if (id == null) return NotFound();
-
-            var match = await _matchService.GetById(id.Value);
-            return match == null ? NotFound() : View(match);
-        }
-
-        // Метод Edit (POST)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstTeamId,SecondTeamId,MatchDate")] Match match)
-        {
-            if (id != match.Id) return NotFound();
-            if (!ModelState.IsValid) return View(match);
+            if (id != match.Id)
+            {
+                return BadRequest();
+            }
 
             try
             {
@@ -91,29 +74,28 @@ namespace KooliProjekt.Controllers
             }
             catch
             {
-                if (!await _matchService.Exists(match.Id)) return NotFound();
+                if (!await _matchService.Exists(match.Id))
+                {
+                    return NotFound();
+                }
                 throw;
             }
 
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
 
-        // Метод Delete (GET)
-        public async Task<IActionResult> Delete(int? id)
+        // DELETE api/Matches/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
+            var success = await _matchService.Delete(id);
 
-            var match = await _matchService.GetById(id.Value);
-            return match == null ? NotFound() : View(match);
-        }
+            if (!success)
+            {
+                return NotFound();
+            }
 
-        // Метод Delete (POST)
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _matchService.Delete(id);
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
     }
 }

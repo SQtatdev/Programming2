@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,45 +9,71 @@ namespace KooliProjekt.Services
 {
     public class RankingServices : IRankingServices
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public RankingServices(Data.ApplicationDbContext context)
+        public RankingServices(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<PagedResult<Ranking>> List(int page, int pageSize)
         {
-            var query = _context.Rankings.OrderBy(r => r.Id).AsNoTracking();
-
-            return await query.ToPagedResult(page, pageSize);
+            return await _context.Rankings
+                .Include(r => r.TournamentID)
+                .Include(r => r.User)
+                .OrderBy(r => r.Id)
+                .AsNoTracking()
+                .ToPagedResult(page, pageSize);
         }
 
         public async Task<Ranking> GetById(int id)
         {
-            return await _context.Rankings.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Rankings
+                .Include(r => r.TournamentID)
+                .Include(r => r.User)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task Save(Ranking ranking)
+        public async Task<bool> Save(Ranking ranking)
         {
-            _context.Rankings.Add(ranking);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Rankings.Add(ranking);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task Edit(Ranking ranking)
+        public async Task<bool> Edit(Ranking ranking)
         {
-            _context.Rankings.Update(ranking);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var existing = await _context.Rankings.FindAsync(ranking.Id);
+                if (existing == null) return false;
+
+                _context.Entry(existing).CurrentValues.SetValues(ranking);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var ranking = await _context.Rankings.FindAsync(id);
-            if (ranking != null)
-            {
-                _context.Rankings.Remove(ranking);
-                await _context.SaveChangesAsync();
-            }
+            if (ranking == null) return false;
+
+            _context.Rankings.Remove(ranking);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> Exists(int id)
@@ -56,7 +83,11 @@ namespace KooliProjekt.Services
 
         public async Task UpdateAllRankings()
         {
-            
+            // Логика обновления всех рейтингов
+            // Например:
+            var predictions = await _context.Predictions.ToListAsync();
+            // Вычислить новые баллы и обновить рейтинги
+            await _context.SaveChangesAsync();
         }
     }
 }
