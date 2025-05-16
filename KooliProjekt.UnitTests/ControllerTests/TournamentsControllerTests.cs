@@ -171,7 +171,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            _mockService.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+            _mockService.Setup(x => x.Delete(id)).ReturnsAsync(true);
 
             // Act
             var result = await _controller.DeleteConfirmed(id);
@@ -210,8 +210,9 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 TournamentEnd = DateTime.Now.AddDays(2)
             };
             _mockService.Setup(x => x.HasOverlappingTournaments(
-                overlappingTournament.TournamentStart,
-                overlappingTournament.TournamentEnd));
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                null));
             _controller.ModelState.AddModelError("", "Tournament dates overlap with existing tournament");
 
             // Act

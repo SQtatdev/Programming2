@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using KooliProjekt.Models;
 using System;
+using KooliProjekt.Search;
 
+
+var search = new MatchSearch();
 namespace KooliProjekt.UnitTests.ServiceTests
 {
     public class MatchServiceTests : ServiceTestBase, IDisposable
@@ -45,8 +48,10 @@ namespace KooliProjekt.UnitTests.ServiceTests
         [Fact]
         public async Task List_ReturnsAllMatches()
         {
-            var result = await _service.List(1, 10);
+            var search = new MatchSearch(); // Create a default MatchSearch object
+            var result = await _service.List(1, 10, search); // Pass the search parameter
             Assert.Equal(2, result.Results.Count);
+            return;
         }
 
         [Fact]

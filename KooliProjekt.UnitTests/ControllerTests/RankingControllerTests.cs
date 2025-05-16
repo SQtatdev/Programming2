@@ -111,7 +111,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             var validRanking = new Ranking { Id = 1, UserId = 12, TotalPoints = 150 };
-            _mockService.Setup(x => x.Save(validRanking)).Returns(Task.CompletedTask);
+            _mockService.Setup(x => x.Save(validRanking)).ReturnsAsync(true);
 
             // Act
             var result = await _controller.Edit(1, validRanking);
@@ -157,7 +157,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            _mockService.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+            _mockService.Setup(x => x.Delete(id)).ReturnsAsync(true);
 
             // Act
             var result = await _controller.DeleteConfirmed(id);

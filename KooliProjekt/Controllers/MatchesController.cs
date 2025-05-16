@@ -29,6 +29,7 @@ namespace KooliProjekt.Controllers
             [FromQuery] MatchSearch? search = null)
         {
             var matches = await _matchService.List(page, pageSize, search);
+            // With this:
             return Ok(matches);
         }
 
@@ -43,6 +44,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
+            // With the following:
             return Ok(match);
         }
 
@@ -52,6 +54,7 @@ namespace KooliProjekt.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Replace this line in the Edit method:
                 return BadRequest(ModelState);
             }
 
@@ -101,6 +104,52 @@ namespace KooliProjekt.Controllers
             await _matchService.Delete(id);
 
             return RedirectToAction(nameof(Index));
+        }
+        // Add this method to the MatchesController class
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                await _matchService.Delete(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, statusCode: 500);
+            }
+        }
+        // Add this method to the MatchesController class
+        public async Task<IActionResult> Edit(int id, Match match)
+        {
+            if (id != match.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Replace this line in the Edit method:
+                return View(match);
+            }
+
+            try
+            {
+                await _matchService.Save(match);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, statusCode: 500);
+            }
+
+            // Replace this line in the Edit method:
+            return RedirectToAction("Index");
+        }
+        // Add the Index method to the MatchesController class
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, MatchSearch? search = null)
+        {
+            var matches = await _matchService.List(page, pageSize, search);
+            // Replace this line in the Index method:
+            return View(matches);
         }
     }
 }
