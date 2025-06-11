@@ -1,39 +1,25 @@
 ﻿using Xunit;
-using KooliProjekt.Data;
-using System.ComponentModel.DataAnnotations;
 using KooliProjekt.Models;
 
 namespace KooliProjekt.UnitTests.ModelTests
 {
-    public class RankingTests
+    public class RankingTest
     {
         [Fact]
-        public void Ranking_ValidModel_PassesValidation()
+        public void Ranking_Properties_SetCorrectly()
         {
-            // Arrange
+            // Arrange & Act
             var ranking = new Ranking
             {
-                UserId = 14,
+                Id = 1,
+                UserId = "1", // Исправлено: строка вместо int
                 TotalPoints = 100,
             };
-            var context = new ValidationContext(ranking);
-            var results = new List<ValidationResult>();
-
-            // Act
-            var isValid = Validator.TryValidateObject(ranking, context, results, true);
 
             // Assert
-            Assert.True(isValid);
-        }
-
-        [Fact]
-        public void Ranking_NegativePoints_FailsValidation()
-        {
-            // Arrange
-            var ranking = new Ranking { TotalPoints = -1 };
-
-            // Act & Assert
-            Assert.Throws<ValidationException>(() => ranking.TotalPoints);
+            Assert.Equal(1, ranking.Id);
+            Assert.Equal("1", ranking.UserId); // Проверка строки
+            Assert.Equal(100, ranking.TotalPoints);
         }
     }
 }

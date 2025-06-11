@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace KooliProjekt.Data
 {
     [ExcludeFromCodeCoverage]
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser> // Наследуемся от IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
@@ -16,40 +16,48 @@ namespace KooliProjekt.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<Ranking> Rankings { get; set; }
-        public DbSet<Player> Players { get; set; } // Добавляем DbSet для Player
+        public DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Важно для настройки Identity
+            base.OnModelCreating(modelBuilder);
 
-            // Настройка отношения Match -> FirstTeam
+            // Match - Team relationships
             modelBuilder.Entity<Match>()
                 .HasOne(m => m.FirstTeam)
-                .WithMany(t => t.HomeMatches) // Предполагаем, что Team имеет коллекцию HomeMatches
+                .WithMany(t => t.HomeMatches)
                 .HasForeignKey(m => m.FirstTeamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Настройка отношения Match -> SecondTeam
             modelBuilder.Entity<Match>()
                 .HasOne(m => m.SecondTeam)
-                .WithMany(t => t.AwayMatches) // Предполагаем, что Team имеет коллекцию AwayMatches
+                .WithMany(t => t.AwayMatches)
                 .HasForeignKey(m => m.SecondTeamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Настройка отношения Match -> Tournament
+            // Match - Tournament relationship
             modelBuilder.Entity<Match>()
                 .HasOne(m => m.Tournament)
-                .WithMany(t => t.Matches) // Предполагаем, что Tournament имеет коллекцию Matches
+                .WithMany(t => t.Matches)
                 .HasForeignKey(m => m.TournamentId);
 
-            // Настройка отношения Team -> Players
+            // Team - Players relationship
             modelBuilder.Entity<Team>()
                 .HasMany(t => t.Players)
                 .WithOne(p => p.Team)
                 .HasForeignKey(p => p.TeamId)
-                .OnDelete(DeleteBehavior.Cascade); // Каскадное удаление игроков при удалении команды
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Дополнительные настройки при необходимости...
+            // Ranking - User relationship (FIXED)
+            modelBuilder.Entity<Ranking>(entity =>
+            {
+                entity.HasOne(r => r.User)
+                    .WithMany()
+                    .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(r => r.UserId);
+            });
         }
     }
 }

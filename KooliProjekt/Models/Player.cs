@@ -1,4 +1,5 @@
 ﻿// Models/Player.cs
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt.Models
@@ -9,6 +10,7 @@ namespace KooliProjekt.Models
         public int Id { get; set; }
         public required string PlayerName { get; set; }
         public int TeamId { get; set; }
-        public required Team Team { get; set; }
+        [ForeignKey("TeamId")]
+        public Team Team { get; set; }
     }
 }

@@ -1,52 +1,51 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using KooliProjekt;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
+using Xunit;
 using KooliProjekt.IntegrationTests.Helpers;
-using System.Collections.Generic;
+using KooliProjekt.Data;
 using System.Net.Http;
 
 namespace KooliProjekt.IntegrationTests
 {
     public class TournamentsControllerIntegrationTests : TestBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public TournamentsControllerIntegrationTests(WebApplicationFactory<Program> factory)
+        public TournamentsControllerIntegrationTests(TestApplicationFactory<Program> factory)
+            : base(factory)
         {
-            _context = Factory.Services.GetRequiredService<ApplicationDbContext>();
+        }
+
+        private ApplicationDbContext GetDbContext()
+        {
+            var scope = Factory.Services.CreateScope();
+            return scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         }
 
         [Fact]
         public async Task Create_ValidTournament_RedirectsToIndex()
         {
             // Arrange
-            var client = Factory.CreateClient();
+            using var context = GetDbContext();
+            var initialCount = context.Tournaments.Count();
+
+            // Исправлено: создание правильного FormUrlEncodedContent
             var formData = new Dictionary<string, string>
             {
-                { "Name", "New Tournament" },
-                { "StartDate", DateTime.Now.AddDays(1).ToString() },
-                { "EndDate", DateTime.Now.AddDays(10).ToString() }
+                { "Name", "Test Tournament" },
+                { "Location", "Test Location" }
+                // Добавьте другие необходимые поля
             };
 
+            var content = new FormUrlEncodedContent(formData);
+
             // Act
-            var response = await client.PostAsync("/Tournaments/Create",
-                new FormUrlEncodedContent(formData));
+            var response = await Client.PostAsync("/Tournaments/Create", content);
 
             // Assert
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-            Assert.Equal("/Tournaments", response.Headers.Location.OriginalString);
-        }
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+            Assert.Equal(initialCount + 1, context.Tournaments.Count());
         }
     }
 }

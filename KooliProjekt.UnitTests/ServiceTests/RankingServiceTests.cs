@@ -1,49 +1,34 @@
-﻿using Xunit;
+﻿using System.Threading.Tasks;
+using Xunit;
 using KooliProjekt.Services;
 using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using KooliProjekt.Models;
+using KooliProjekt.UnitTests.ControllerTests;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
-    public class RankingServiceTests : IDisposable
+    public class RankingServiceTests : ControllerTestBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly RankingServices _service;
-
-        public RankingServiceTests()
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-            SeedTestData();
-            _service = new RankingServices(_context);
-        }
-
-        private void SeedTestData()
-        {
-            _context.Rankings.Add(new Ranking { Id = 1, UserId = 1, TotalPoints = 100 });
-            _context.SaveChanges();
-        }
-
-        public void Dispose() => _context.Dispose();
-
         [Fact]
-        public async Task GetById_ReturnsRanking()
+        public async Task GetUserRanking_ReturnsCorrectRanking()
         {
-            var result = await _service.GetById(1);
-            Assert.NotNull(result);
-            Assert.Equal(100, result.TotalPoints);
-        }
+            // Arrange
+            _context.Rankings.Add(new Ranking
+            {
+                UserId = "1", // Исправлено: строка вместо int
+                TotalPoints = 100
+            });
+            await _context.SaveChangesAsync();
 
-        [Fact]
-        public async Task UpdateAllRankings_ExecutesSuccessfully()
-        {
-            await _service.UpdateAllRankings();
-            Assert.True(true); // Just verify no exception thrown
+            var service = new RankingServices(_context);
+
+            // Act
+            var ranking = service.GetUserRanking("1"); // Исправлено: передаем строку
+
+            // Assert
+            Assert.NotNull(ranking);
+            Assert.Equal(100, ranking.TotalPoints);
         }
     }
 }

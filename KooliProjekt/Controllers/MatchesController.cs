@@ -129,7 +129,7 @@ namespace KooliProjekt.Controllers
             if (!ModelState.IsValid)
             {
                 // Replace this line in the Edit method:
-                return View(match);
+                return NotFound();
             }
 
             try
@@ -149,7 +149,7 @@ namespace KooliProjekt.Controllers
         {
             var matches = await _matchService.List(page, pageSize, search);
             // Replace this line in the Index method:
-            return View(matches);
+            return NotFound();
         }
     }
 }

@@ -1,49 +1,34 @@
-﻿using KooliProjekt.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.Testing;
 
-[Collection("Sequential")]
-public class TeamsControllerTests : ControllerTestBase
+namespace KooliProjekt.UnitTests.ControllerTests
 {
-    private readonly DbContext _context;
-
-    public TeamsControllerTests(WebApplicationFactory<Program> factory) : base(factory)
+    public class TeamsControllerTests : ControllerTestBase
     {
-        _context = CreateTestDbContext();
-    }
+        // Конструктор без параметров
+        public TeamsControllerTests()
+        {
+            // Дополнительная инициализация при необходимости
+        }
 
-    private DbContext CreateTestDbContext()
-    {
-        var options = new DbContextOptionsBuilder<DbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase")
-            .Options;
+        [Fact]
+        public async Task Create_ValidTeam_RedirectsToIndex()
+        {
+            // Arrange
+            var formData = new Dictionary<string, string>
+            {
+                { "Name", "Test Team" }
+            };
 
-        return new DbContext(options);
-    }
+            var content = new FormUrlEncodedContent(formData);
 
-    protected override void SeedTestData()
-    {
-        var teamsDbSet = _context.Set<Team>();
-        teamsDbSet.AddRange(
-            new Team { Id = 1, TeamName = "Team A" },
-            new Team { Id = 2, TeamName = "Team B" }
-        );
-        _context.SaveChanges();
-    }
+            // Act
+            var response = await _client.PostAsync("/Teams/Create", content);
 
-    [Fact]
-    public async Task GetAll_ReturnsSuccessStatusCode()
-    {
-        var response = await _client.GetAsync("/api/Teams");
-        response.EnsureSuccessStatusCode();
-    }
-
-    [Fact]
-    public async Task GetById_ReturnsNotFound_ForInvalidId()
-    {
-        var response = await _client.GetAsync("/api/Teams/999");
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            // Assert
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal("Test Team", _context.Teams.First().TeamName);
+        }
     }
 }

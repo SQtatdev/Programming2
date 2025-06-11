@@ -1,24 +1,26 @@
-﻿using System;
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
+using Xunit;
 
 namespace KooliProjekt.IntegrationTests.Helpers
 {
-    public abstract class TestBase : IDisposable
+    public abstract class TestBase : IClassFixture<TestApplicationFactory<Program>>
     {
-        public WebApplicationFactory<FakeStartup> Factory { get; }
+        protected readonly HttpClient Client;
+        protected readonly TestApplicationFactory<Program> Factory;
 
-        public TestBase()
+        protected TestBase(TestApplicationFactory<Program> factory)
         {
-            Factory = new TestApplicationFactory<FakeStartup>();
+            Factory = factory;
+            Client = factory.CreateClient();
         }
 
-        public void Dispose()
+        protected ApplicationDbContext GetDbContext()
         {
-            var dbContext = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
-            dbContext.Database.EnsureDeleted();
+            var scope = Factory.Services.CreateScope();
+            return scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         }
-
-        // Add your other helper methods here
     }
 }

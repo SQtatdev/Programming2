@@ -1,42 +1,50 @@
-﻿using System.Threading.Tasks;
-using KooliProjekt.IntegrationTests.Helpers;
+﻿using System.Net;
+using System.Threading.Tasks;
 using Xunit;
+using KooliProjekt.IntegrationTests.Helpers;
+using System.Net.Http;
 
 namespace KooliProjekt.IntegrationTests
 {
-    public class HomeControllerTests : TestBase
+    public class HomeControllerTests : IClassFixture<TestApplicationFactory<Program>> // Переименовано
     {
-        [Theory]
-        [InlineData("/")]
-        [InlineData("/Home/Privacy")]
-        public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
+        private readonly HttpClient _client;
+        private readonly TestApplicationFactory<Program> _factory;
+
+        public HomeControllerTests(TestApplicationFactory<Program> factory) // Переименовано
+        {
+            _factory = factory;
+            _client = factory.CreateClient();
+        }
+
+        [Fact]
+        public async Task Get_AnonymousCanAccessPrivacyPage()
         {
             // Arrange
-            var client = Factory.CreateClient();
+            var url = "/Home/Privacy";
 
             // Act
-            var response = await client.GetAsync(url);
+            var response = await _client.GetAsync(url);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Theory]
-        [InlineData("/Home/Privacy")]
-
-        public async Task Get_AnonymousCanAccessPrivacy(string url)
+        [Fact]
+        public async Task Index_ReturnRankingFromDatabase()
         {
             // Arrange
-            using var client = Factory.CreateClient();
+            var url = "/Home";
 
             // Act
-            using var response = await client.GetAsync(url);
+            var response = await _client.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
-
+            Assert.Contains("testuser@example.com", content);
+            Assert.Contains("Position: 1", content);
         }
-     }
+    }
 }

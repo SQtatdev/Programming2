@@ -34,6 +34,11 @@ namespace KooliProjekt.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
+        public Ranking GetUserRanking(string userId)
+        {
+            return _context.Rankings
+                .FirstOrDefault(r => r.UserId == userId);
+        }
 
         public async Task<bool> Save(Ranking ranking)
         {
@@ -89,5 +94,6 @@ namespace KooliProjekt.Services
             // Вычислить новые баллы и обновить рейтинги
             await _context.SaveChangesAsync();
         }
+
     }
 }

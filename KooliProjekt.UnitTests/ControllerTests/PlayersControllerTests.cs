@@ -1,62 +1,61 @@
-﻿using KooliProjekt.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
-using System.Net.Http.Json; // Add this using directive
+using KooliProjekt.Models;
+using KooliProjekt.Data;
+using KooliProjekt.UnitTests.ControllerTests;
+using Microsoft.EntityFrameworkCore;
 
-using KooliProjekt; // Ensure the namespace containing the Program class is referenced
-using KooliProjekt.Data; // Add this using directive to reference the namespace containing ApplicationDbContext
-using Microsoft.AspNetCore.Mvc.Testing; // Correct namespace for WebApplicationFactory
-using System.Collections.Generic; // Add this using directive for List<T>
-using Microsoft.Extensions.DependencyInjection;
-[Collection("Sequential")]
-public class PlayersControllerTests : ControllerTestBase
+namespace KooliProjekt.UnitTests.ControllerTests
 {
-    public PlayersControllerTests(WebApplicationFactory<Program> factory)
-
-        : base(factory) { }
-
-    protected override void SeedTestData()
+    public class PlayersControllerTests : ControllerTestBase
     {
-        using var scope = _factory.Services.CreateScope();
-        var scopedServices = scope.ServiceProvider;
-        var _context = scopedServices.GetRequiredService<ApplicationDbContext>(); // Obtain the DbContext
-
-        var team = new Team { Id = 1, TeamName = "Test Team" };
-        var players = new List<Player>
+        [Fact]
+        public async Task Index_ReturnsViewResult_WithListOfPlayers()
         {
-            new Player { Id = 1, PlayerName = "Player 1", TeamId = 1, Team = team },
-            new Player { Id = 2, PlayerName = "Player 2", TeamId = 1, Team = team }
-        };
+            // Arrange
+            _context.Players.Add(new Player
+            {
+                Id = 1,
+                PlayerName = "Test Player",
+                Team = new Team { Id = 1, TeamName = "Test Team" }
+            });
+            await _context.SaveChangesAsync();
 
-        _context.Teams.Add(team);
-        _context.Players.AddRange(players);
-        _context.SaveChanges();
+            // Act
+            var response = await _client.GetAsync("/Players");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Test Player", content);
+        }
+
+        [Fact]
+        public async Task Create_ValidPlayer_RedirectsToIndex()
+        {
+            // Arrange
+            var team = new Team { Id = 1, TeamName = "Test Team" };
+            _context.Teams.Add(team);
+            await _context.SaveChangesAsync();
+
+            var formData = new Dictionary<string, string>
+            {
+                { "PlayerName", "New Player" },
+                { "TeamId", "1" }
+            };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            // Act
+            var response = await _client.PostAsync("/Players/Create", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal("New Player", _context.Players.First().PlayerName);
+        }
     }
-
-    [Fact]
-    public async Task GetAll_ReturnsAllPlayers()
-    {
-        var response = await _client.GetFromJsonAsync<List<Player>>("/api/Players");
-        Assert.Equal(2, response?.Count); // Added null-conditional operator
-    }
-
-    [Fact]
-    public async Task GetById_ReturnsPlayer_WhenExists()
-    {
-        var response = await _client.GetFromJsonAsync<Player>("/api/Players/1");
-        Assert.Equal("Player 1", response?.PlayerName); // Corrected property name and added null-conditional operator
-    }
-}
-public abstract class ControllerTestBase
-{
-    protected readonly WebApplicationFactory<Program> _factory;
-    protected readonly HttpClient _client; // Added this field
-
-    protected ControllerTestBase(WebApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-        _client = _factory.CreateClient(); // Initialize _client
-    }
-
-    protected abstract void SeedTestData();
 }
