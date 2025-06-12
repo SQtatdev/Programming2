@@ -1,155 +1,105 @@
-﻿using KooliProjekt.Data;
-using KooliProjekt.Models;
+﻿using KooliProjekt.Models;
 using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MatchesController : ControllerBase
+    public class MatchesController : Controller
     {
-        private readonly IMatchService _matchService;
-        private readonly ApplicationDbContext _context;
+        private readonly IMatchService _MatchService;
 
-        public MatchesController(IMatchService matchService, ApplicationDbContext context)
+        // Конструктор с внедрением зависимости ITeamService
+        public MatchesController(IMatchService MatchServices)
         {
-            _matchService = matchService;
-            _context = context;
+            _MatchService = MatchServices;
         }
 
-        // GET: api/Matches
-        [HttpGet]
-        public async Task<IActionResult> GetAll(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] MatchSearch? search = null)
+        // GET: Teams
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var matches = await _matchService.List(page, pageSize, search);
-            // With this:
-            return Ok(matches);
+            // Create a default MatchSearch object (modify if needed)
+            var search = new MatchSearch();
+
+            // Pass all three required parameters
+            var result = await _MatchService.List(page, pageSize, search);
+
+            return View(result);
         }
 
-        // GET api/Matches/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        // GET: Teams/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var match = await _matchService.GetById(id);
+            if (id == null) return NotFound();
 
-            if (match == null)
-            {
-                return NotFound();
-            }
-
-            // With the following:
-            return Ok(match);
+            var matchid = await _MatchService.GetById(id.Value);
+            return matchid == null ? NotFound() : View(matchid);
         }
 
-        // POST api/Matches
+        // GET: Teams/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Teams/Create
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Match match)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Match matchid)
         {
-            if (!ModelState.IsValid)
-            {
-                // Replace this line in the Edit method:
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return View(matchid);
 
-            await _matchService.Save(match);
-            return CreatedAtAction(nameof(GetById), new { id = match.Id }, match);
+            await _MatchService.Save(matchid);
+            return RedirectToAction(nameof(Index));
         }
 
-        // PUT api/Matches/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Match match)
+        // GET: Teams/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id != match.Id)
-            {
-                return BadRequest();
-            }
+            if (id == null) return NotFound();
+
+            var team = await _MatchService.GetById(id.Value);
+            return team == null ? NotFound() : View(team);
+        }
+
+        // POST: Teams/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Match match)
+        {
+            if (id != match.Id) return NotFound();
+            if (!ModelState.IsValid) return View(match);
 
             try
             {
-                await _matchService.Edit(match);
+                await _MatchService.Edit(match);
             }
             catch
             {
-                if (!await _matchService.Exists(match.Id))
-                {
-                    return NotFound();
-                }
+                if (!await _MatchService.Exists(match.Id)) return NotFound();
                 throw;
             }
 
-            return NoContent();
+            return RedirectToAction(nameof(Index));
         }
 
-        // DELETE api/Matches/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        // GET: Teams/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            await _matchService.Delete(id);
+            if (id == null) return NotFound();
 
-            return RedirectToAction(nameof(Index));
-
-            var item = await _matchService.GetById(id);
-            if(item == null)
-            {
-                return NotFound();
-            }
-
-            await _matchService.Delete(id);
-
-            return RedirectToAction(nameof(Index));
+            var match = await _MatchService.GetById(id.Value);
+            return match == null ? NotFound() : View(match);
         }
-        // Add this method to the MatchesController class
+
+        // POST: Teams/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                await _matchService.Delete(id);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                return Problem(detail: ex.Message, statusCode: 500);
-            }
-        }
-        // Add this method to the MatchesController class
-        public async Task<IActionResult> Edit(int id, Match match)
-        {
-            if (id != match.Id)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                // Replace this line in the Edit method:
-                return NotFound();
-            }
-
-            try
-            {
-                await _matchService.Save(match);
-            }
-            catch (Exception ex)
-            {
-                return Problem(detail: ex.Message, statusCode: 500);
-            }
-
-            // Replace this line in the Edit method:
-            return RedirectToAction("Index");
-        }
-        // Add the Index method to the MatchesController class
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, MatchSearch? search = null)
-        {
-            var matches = await _matchService.List(page, pageSize, search);
-            // Replace this line in the Index method:
-            return NotFound();
+            await _MatchService.Delete(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
